@@ -50,6 +50,9 @@ private:
     int playerStep;
     Uint32 lastStepTime;
     int stepDelay;
+    bool moveLeft; // New
+    bool moveRight; // New
+    Uint32 lastMoveTime; // New
 
     void loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount);
 };

@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
-    : posX(960), posY(540), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE), onGround(false), gravity(1), maxFallSpeed(10), jumpForce(15), playerStep(50), lastStepTime(0), stepDelay(0) {
+    : posX(960), posY(540), velY(0), frame(0), animationSpeed(100), lastFrameTime(0), direction(RIGHT), state(IDLE), onGround(false), gravity(1), maxFallSpeed(10), jumpForce(15), playerStep(20), lastStepTime(0), stepDelay(10), moveLeft(false), moveRight(false), lastMoveTime(0) {
     // Load all textures for different states and directions
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
     loadTextures(renderer, base_path + "/idle_R/Character_1-idle_", idleRightTextures, 31);
@@ -12,7 +12,7 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     loadTextures(renderer, base_path + "/Jump_R/Character_1-jump_", jumpRightTextures, 14);
 
     // Calculate the scaling factor for different animations
-    float scaleFactor = 0.45; // Adjust this factor as needed
+    float scaleFactor = 0.25; // Adjust this factor as needed
 
     // Set the new width and height based on the scaling factor
     idleWidth = static_cast<int>(195 * scaleFactor);
@@ -63,20 +63,14 @@ void Player::handleEvent(SDL_Event& e) {
             }
             break;
         case SDLK_LEFT:
-            if (SDL_GetTicks() - lastStepTime > stepDelay) {
-                posX -= playerStep;
-                direction = LEFT;
-                state = RUNNING;
-                lastStepTime = SDL_GetTicks();
-            }
+            moveLeft = true;
+            direction = LEFT;
+            state = RUNNING;
             break;
         case SDLK_RIGHT:
-            if (SDL_GetTicks() - lastStepTime > stepDelay) {
-                posX += playerStep;
-                direction = RIGHT;
-                state = RUNNING;
-                lastStepTime = SDL_GetTicks();
-            }
+            moveRight = true;
+            direction = RIGHT;
+            state = RUNNING;
             break;
         }
     }
@@ -86,16 +80,30 @@ void Player::handleEvent(SDL_Event& e) {
             if (velY < 0) velY = 0;
             break;
         case SDLK_LEFT:
-            state = IDLE;
+            moveLeft = false;
+            if (!moveRight) state = IDLE;
             break;
         case SDLK_RIGHT:
-            state = IDLE;
+            moveRight = false;
+            if (!moveLeft) state = IDLE;
             break;
         }
     }
 }
 
 void Player::move() {
+    Uint32 currentTime = SDL_GetTicks();
+
+    if (currentTime > lastMoveTime + stepDelay) {
+        if (moveLeft) {
+            posX -= playerStep;
+        }
+        if (moveRight) {
+            posX += playerStep;
+        }
+        lastMoveTime = currentTime;
+    }
+
     velY += gravity;
     if (velY > maxFallSpeed) velY = maxFallSpeed;
 
