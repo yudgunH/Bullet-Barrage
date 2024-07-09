@@ -2,9 +2,10 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <iostream>
+#include "Player.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1920;
+const int SCREEN_HEIGHT = 1080;
 
 bool init(SDL_Window** window, SDL_Renderer** renderer) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -74,7 +75,7 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    std::string imagePath = "..\\assets\\img\\mainBackGround.png";
+    std::string imagePath = "../assets/img/mainBackGround.png";
     std::cout << "Loading image from path: " << imagePath << std::endl;
 
     SDL_Texture* backgroundTexture = loadTexture(imagePath, renderer);
@@ -84,8 +85,7 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    // Load and play background music
-    Mix_Music* backgroundMusic = Mix_LoadMUS("..\\assets\\audio\\Soundtrack - Bullet Barrage.mp3");
+    Mix_Music* backgroundMusic = Mix_LoadMUS("../assets/audio/Soundtrack - Bullet Barrage.mp3");
     if (backgroundMusic == NULL) {
         std::cerr << "Failed to load background music! SDL_mixer Error: " << Mix_GetError() << std::endl;
         close(window, renderer, backgroundTexture, nullptr);
@@ -93,6 +93,8 @@ int main(int argc, char* args[]) {
     }
 
     Mix_PlayMusic(backgroundMusic, -1);
+
+    Player player(renderer, "../assets/img/character");
 
     bool quit = false;
     SDL_Event e;
@@ -102,10 +104,14 @@ int main(int argc, char* args[]) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
+            player.handleEvent(e);
         }
+
+        player.move();
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+        player.render(renderer);
         SDL_RenderPresent(renderer);
     }
 
