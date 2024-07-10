@@ -1,5 +1,2 @@
-﻿  Player.cpp
-G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(60,24): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(108,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(110,13): warning C4244: '+=': conversion from 'float' to 'int', possible loss of data
+﻿  Menu.cpp
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe

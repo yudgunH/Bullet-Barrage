@@ -12,7 +12,7 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     loadTextures(renderer, base_path + "/Jump_R/Character_1-jump_", jumpRightTextures, 14);
 
     // Calculate the scaling factor for different animations
-    float scaleFactor = 0.25; // Adjust this factor as needed
+    float scaleFactor = 0.35; // Adjust this factor as needed
 
     // Set the new width and height based on the scaling factor
     idleWidth = static_cast<int>(195 * scaleFactor);
