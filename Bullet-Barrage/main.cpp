@@ -6,9 +6,10 @@
 #include "Player.h"
 #include "Menu.h"
 #include "Threat.h"
+#include "Background.h"
 
-const int SCREEN_WIDTH = 1920;
-const int SCREEN_HEIGHT = 1080;
+const int SCREEN_WIDTH = 1881;
+const int SCREEN_HEIGHT = 918;
 
 bool init(SDL_Window** window, SDL_Renderer** renderer) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -64,8 +65,7 @@ SDL_Texture* loadTexture(const std::string& path, SDL_Renderer* renderer) {
     return newTexture;
 }
 
-void close(SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* backgroundTexture, Mix_Music* menuMusic, Mix_Music* gameMusic) {
-    SDL_DestroyTexture(backgroundTexture);
+void close(SDL_Window* window, SDL_Renderer* renderer, Mix_Music* menuMusic, Mix_Music* gameMusic) {
     Mix_FreeMusic(menuMusic);
     Mix_FreeMusic(gameMusic);
     SDL_DestroyRenderer(renderer);
@@ -85,27 +85,17 @@ int main(int argc, char* args[]) {
         return -1;
     }
 
-    std::string imagePath = "../assets/img/mainBackGround.png";
-    std::cout << "Loading image from path: " << imagePath << std::endl;
-
-    SDL_Texture* backgroundTexture = loadTexture(imagePath, renderer);
-    if (backgroundTexture == NULL) {
-        std::cerr << "Failed to load background texture!" << std::endl;
-        close(window, renderer, backgroundTexture, nullptr, nullptr);
-        return -1;
-    }
-
     Mix_Music* menuMusic = Mix_LoadMUS("../assets/audio/Soundtrack - Swift Shooters.mp3");
     if (menuMusic == NULL) {
         std::cerr << "Failed to load menu music! SDL_mixer Error: " << Mix_GetError() << std::endl;
-        close(window, renderer, backgroundTexture, nullptr, nullptr);
+        close(window, renderer, nullptr, nullptr);
         return -1;
     }
 
     Mix_Music* gameMusic = Mix_LoadMUS("../assets/audio/Soundtrack - Bullet Barrage.mp3");
     if (gameMusic == NULL) {
         std::cerr << "Failed to load game music! SDL_mixer Error: " << Mix_GetError() << std::endl;
-        close(window, renderer, backgroundTexture, menuMusic, nullptr);
+        close(window, renderer, menuMusic, nullptr);
         return -1;
     }
 
@@ -114,6 +104,10 @@ int main(int argc, char* args[]) {
     Player player(renderer, "../assets/img/character");
     Menu menu(renderer);
     Threat threat(renderer, "../assets/img/Bullet.png");
+
+    // Render -> Background
+    Background menuBackground(renderer, "../assets/img/cities");
+    Background gameBackground(renderer, "../assets/img/cities");
 
     bool quit = false;
     SDL_Event e;
@@ -140,12 +134,15 @@ int main(int argc, char* args[]) {
         }
 
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
         if (currentScreen == 0) {
-            menu.render(renderer);
+            menuBackground.update();
+            menuBackground.render(renderer);
+            menu.render(renderer); // Render menu
         }
         else if (currentScreen == 1) {
+            gameBackground.update();
+            gameBackground.render(renderer);
             player.move();
             player.render(renderer);
             threat.update();
@@ -161,6 +158,6 @@ int main(int argc, char* args[]) {
         SDL_RenderPresent(renderer);
     }
 
-    close(window, renderer, backgroundTexture, menuMusic, gameMusic);
+    close(window, renderer, menuMusic, gameMusic);
     return 0;
 }

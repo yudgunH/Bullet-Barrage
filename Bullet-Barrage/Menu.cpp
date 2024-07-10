@@ -1,4 +1,4 @@
-#include "Menu.h"
+﻿#include "Menu.h"
 #include <iostream>
 #include <SDL_image.h>
 
@@ -8,29 +8,22 @@ Menu::Menu(SDL_Renderer* renderer) {
         exit(1);
     }
 
-    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24); // Font file path
+    
+    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 11); // Font file path
     if (font == NULL) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         exit(1);
     }
 
-    textColor = { 255, 255, 255 }; 
-    hoverColor = { 0, 0, 0, 255 }; 
+    textColor = { 255, 255, 255 };
+    hoverColor = { 0, 0, 0, 255 };
 
-    // Load background texture for menu
-    SDL_Surface* bgSurface = IMG_Load("../assets/img/Menu.png");
-    if (bgSurface == NULL) {
-        std::cerr << "Unable to load background image! SDL_image Error: " << IMG_GetError() << std::endl;
-        exit(1);
-    }
-    else {
-        backgroundTexture = SDL_CreateTextureFromSurface(renderer, bgSurface);
-        SDL_FreeSurface(bgSurface);
-    }
+    // Initialize background
+    background = new Background(renderer, "../assets/img/cities");
 
     // Create buttons
-    std::vector<std::string> labels = { "Play", "Score", "Setting", "Exit" }; // Adjusted order of buttons
-    int startY = 600; // Adjust this value to lower the start position of the buttons
+    std::vector<std::string> labels = { "Play", "Score", "Setting", "Exit" };
+    int startY = 300; // Adjust this value to lower the start position of the buttons
     int yIncrement = 120; // Adjust this value to control the space between the buttons
     for (int i = 0; i < labels.size(); ++i) {
         Button button;
@@ -52,7 +45,7 @@ Menu::~Menu() {
     }
     TTF_CloseFont(font);
     TTF_Quit();
-    SDL_DestroyTexture(backgroundTexture);
+    delete background; // Properly delete background
 }
 
 void Menu::handleEvent(SDL_Event& e, bool& quit, int& currentScreen) {
@@ -89,7 +82,8 @@ void Menu::handleEvent(SDL_Event& e, bool& quit, int& currentScreen) {
 }
 
 void Menu::render(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+    background->update(); // Update background animation
+    background->render(renderer); // Render background
 
     for (const auto& button : buttons) {
         if (button.hover) {

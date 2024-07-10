@@ -5,6 +5,7 @@
 #include <SDL_ttf.h>
 #include <string>
 #include <vector>
+#include "Background.h"
 
 class Menu {
 public:
@@ -26,7 +27,7 @@ private:
     SDL_Color textColor;
     SDL_Color hoverColor;
 
-    SDL_Texture* backgroundTexture;
+    Background* background; // Add Background member
 
     SDL_Texture* createTextTexture(SDL_Renderer* renderer, const std::string& text, SDL_Color color);
 };

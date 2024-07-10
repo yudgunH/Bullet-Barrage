@@ -1,3 +1,2 @@
-﻿  Threat.cpp
-G:\C++\Bullet-Barrage\Bullet-Barrage\Threat.cpp(51,21): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  main.cpp
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe
