@@ -3,7 +3,7 @@
 #include <iostream>
 
 Threat::Threat(SDL_Renderer* renderer, const std::string& path)
-    : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16), lastFrameTime(0), frameDelay(100),
+    : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16), lastFrameTime(0), frameDelay(0),
     x_pos(0), y_pos(100), velX(0.5f), lastUpdateTime(0) {  // Adjust velX for slower speed
 
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
@@ -43,7 +43,7 @@ void Threat::update() {
     }
 
     // Update position with velocity
-    if (currentTime > lastUpdateTime + 16) { // Update position every 16 ms (roughly 60 FPS)
+    if (currentTime > lastUpdateTime + 2) { // Update position every 16 ms (roughly 60 FPS)
         x_pos += velX;
         lastUpdateTime = currentTime;
 

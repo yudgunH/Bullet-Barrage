@@ -30,15 +30,19 @@ private:
     State state;
     bool onGround;
     bool canDoubleJump;
+    bool reachedPeak;
     int jumpStartY;
     int jumpTargetY;
 
+    int groundY; // Tọa độ Y của mặt đất
     int jumpForce;
     int playerStep;
     Uint32 lastStepTime;
     Uint32 stepDelay;
     Uint32 lastJumpTime;
     Uint32 jumpDelay;
+    Uint32 peakDelay; // Thời gian delay khi đạt độ cao nhất
+    Uint32 peakTime; // Thời gian đạt độ cao nhất
     bool moveLeft;
     bool moveRight;
     Uint32 lastMoveTime;
