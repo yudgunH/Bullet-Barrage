@@ -1,6 +1,6 @@
 #include "Menu.h"
 #include <iostream>
-#include <SDL_image.h> // Add this line to include SDL_image
+#include <SDL_image.h>
 
 Menu::Menu(SDL_Renderer* renderer) {
     if (TTF_Init() == -1) {
@@ -8,14 +8,14 @@ Menu::Menu(SDL_Renderer* renderer) {
         exit(1);
     }
 
-    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24); // Replace with your font file path
+    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24); // Font file path
     if (font == NULL) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         exit(1);
     }
 
-    textColor = { 255, 255, 255 }; // White color
-    hoverColor = { 255, 0, 0 };    // Red color for hover effect
+    textColor = { 255, 255, 255 }; 
+    hoverColor = { 0, 0, 0, 255 }; 
 
     // Load background texture for menu
     SDL_Surface* bgSurface = IMG_Load("../assets/img/Menu.png");

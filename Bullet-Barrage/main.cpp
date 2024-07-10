@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Player.h"
 #include "Menu.h"
+#include "Threat.h"
 
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
@@ -52,7 +53,8 @@ SDL_Texture* loadTexture(const std::string& path, SDL_Renderer* renderer) {
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
     if (loadedSurface == NULL) {
         std::cerr << "Unable to load image " << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
-    } else {
+    }
+    else {
         newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
         if (newTexture == NULL) {
             std::cerr << "Unable to create texture from " << path << "! SDL_Error: " << SDL_GetError() << std::endl;
@@ -111,6 +113,7 @@ int main(int argc, char* args[]) {
 
     Player player(renderer, "../assets/img/character");
     Menu menu(renderer);
+    Threat threat(renderer, "../assets/img/Bullet.png");
 
     bool quit = false;
     SDL_Event e;
@@ -124,11 +127,14 @@ int main(int argc, char* args[]) {
                     Mix_HaltMusic();
                     Mix_PlayMusic(gameMusic, -1);
                 }
-            } else if (currentScreen == 1) {
+            }
+            else if (currentScreen == 1) {
                 player.handleEvent(e);
-            } else if (currentScreen == 2) {
+            }
+            else if (currentScreen == 2) {
                 // Handle events for score screen (not implemented)
-            } else if (currentScreen == 3) {
+            }
+            else if (currentScreen == 3) {
                 // Handle events for setting screen (not implemented)
             }
         }
@@ -138,12 +144,17 @@ int main(int argc, char* args[]) {
 
         if (currentScreen == 0) {
             menu.render(renderer);
-        } else if (currentScreen == 1) {
+        }
+        else if (currentScreen == 1) {
             player.move();
             player.render(renderer);
-        } else if (currentScreen == 2) {
+            threat.update();
+            threat.render(renderer);
+        }
+        else if (currentScreen == 2) {
             // Render score screen (not implemented)
-        } else if (currentScreen == 3) {
+        }
+        else if (currentScreen == 3) {
             // Render setting screen (not implemented)
         }
 
