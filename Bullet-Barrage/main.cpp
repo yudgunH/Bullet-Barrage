@@ -105,13 +105,19 @@ int main(int argc, char* args[]) {
     Menu menu(renderer);
     Threat threat(renderer, "../assets/img/Bullet.png");
 
-    // Render -> Background
+    // Sử dụng Background cho cả menu và màn chơi chính
     Background menuBackground(renderer, "../assets/img/cities");
     Background gameBackground(renderer, "../assets/img/cities");
 
     bool quit = false;
     SDL_Event e;
     int currentScreen = 0; // 0: Menu, 1: Game, 2: Score, 3: Setting
+
+    // Render lần đầu tiên để tránh màn hình đen
+    SDL_RenderClear(renderer);
+    menuBackground.render(renderer);
+    menu.render(renderer);
+    SDL_RenderPresent(renderer);
 
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {

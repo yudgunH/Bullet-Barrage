@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
-    : posX(960), posY(540), velY(0), frame(0), animationSpeed(100), lastFrameTime(0), direction(RIGHT), state(IDLE), onGround(false), gravity(1), maxFallSpeed(10), jumpForce(15), playerStep(20), lastStepTime(0), stepDelay(10), moveLeft(false), moveRight(false), lastMoveTime(0) {
+    : posX(600), posY(540), velY(0), frame(0), animationSpeed(100), lastFrameTime(0), direction(RIGHT), state(IDLE), onGround(true), gravity(0.5), maxFallSpeed(5), jumpForce(10), playerStep(5), lastStepTime(0), stepDelay(10), moveLeft(false), moveRight(false), lastMoveTime(0) {
     // Load all textures for different states and directions
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
     loadTextures(renderer, base_path + "/idle_R/Character_1-idle_", idleRightTextures, 31);
@@ -111,12 +111,13 @@ void Player::move() {
 
     // Clamp the position to the screen bounds
     if (posX < 0) posX = 0;
-    if (posX + runWidth > 1920) posX = 1920 - runWidth;
+    if (posX + runWidth > 1881) posX = 1881 - runWidth; // Adjusted for new screen width
     if (posY < 0) posY = 0;
-    if (posY + jumpHeight > 1080) {
-        posY = 1080 - jumpHeight;
+    if (posY + jumpHeight > 918) { // Adjusted for new screen height
+        posY = 918 - jumpHeight;
         onGround = true;
         velY = 0;
+        state = IDLE;
     }
 }
 

@@ -8,7 +8,6 @@ Menu::Menu(SDL_Renderer* renderer) {
         exit(1);
     }
 
-    
     font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 11); // Font file path
     if (font == NULL) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;

@@ -47,7 +47,7 @@ void Threat::update() {
         x_pos += velX;
         lastUpdateTime = currentTime;
 
-        if (x_pos > 1920) { // Reset position if threat goes off screen
+        if (x_pos > 1881) { // Reset position if threat goes off screen (adjusted for new screen width)
             x_pos = -frameWidth;
         }
     }

@@ -27,6 +27,9 @@ Background::Background(SDL_Renderer* renderer, const std::string& path)
     if (frames.empty()) {
         std::cerr << "No frames loaded for background animation!" << std::endl;
     }
+
+    // Initialize lastFrameTime to the current time to start animation immediately
+    lastFrameTime = SDL_GetTicks();
 }
 
 Background::~Background() {
