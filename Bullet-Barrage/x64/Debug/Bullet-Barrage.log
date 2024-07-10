@@ -1,2 +1,3 @@
-﻿  Background.cpp
+﻿  Player.cpp
+G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(15,23): warning C4305: 'initializing': truncation from 'double' to 'float'
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe
