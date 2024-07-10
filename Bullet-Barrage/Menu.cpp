@@ -8,7 +8,7 @@ Menu::Menu(SDL_Renderer* renderer) {
         exit(1);
     }
 
-    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 11); // Font file path
+    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24); // Font file path
     if (font == NULL) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         exit(1);
@@ -65,11 +65,11 @@ void Menu::handleEvent(SDL_Event& e, bool& quit, int& currentScreen) {
                     else if (buttons[i].label == "Score") {
                         currentScreen = 2; // Score screen
                     }
-                    else if (buttons[i].label == "Exit") {
-                        quit = true;
-                    }
                     else if (buttons[i].label == "Setting") {
                         currentScreen = 3; // Setting screen
+                    }
+                    else if (buttons[i].label == "Exit") {
+                        quit = true;
                     }
                 }
             }

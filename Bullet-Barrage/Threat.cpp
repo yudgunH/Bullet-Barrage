@@ -42,8 +42,8 @@ void Threat::update() {
         lastFrameTime = currentTime;
     }
 
-    // Update position with velocity
-    if (currentTime > lastUpdateTime + 2) { // Update position every 16 ms (roughly 60 FPS)
+    // Update position with velocity -> speed of threats
+    if (currentTime > lastUpdateTime + 16) { // Update position every 16 ms (roughly 60 FPS)
         x_pos += velX;
         lastUpdateTime = currentTime;
 
