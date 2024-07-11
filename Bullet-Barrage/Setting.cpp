@@ -17,7 +17,8 @@ Setting::Setting(SDL_Renderer* renderer)
         exit(1);
     }
 
-    textColor = { 0, 0, 0, 255 };
+    // Set the text color to black
+    textColor = { 0, 0, 0 };
     hoverColor = { 0, 0, 0, 255 };
 
     // Load background texture for setting
@@ -30,6 +31,11 @@ Setting::Setting(SDL_Renderer* renderer)
         backgroundTexture = SDL_CreateTextureFromSurface(renderer, bgSurface);
         SDL_FreeSurface(bgSurface);
     }
+
+    // Load slider frame texture
+    SDL_Surface* sliderFrameSurface = IMG_Load("../assets/img/UI/WideSlider_WhiteOutline_Frame.png");
+    sliderFrameTexture = SDL_CreateTextureFromSurface(renderer, sliderFrameSurface);
+    SDL_FreeSurface(sliderFrameSurface);
 
     // Load new slider handle texture and hover texture
     SDL_Surface* sliderSurface = IMG_Load("../assets/img/UI/WideSlider_Scroller.png");
@@ -57,8 +63,9 @@ Setting::Setting(SDL_Renderer* renderer)
     rightButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, rightButtonHoverSurface);
     SDL_FreeSurface(rightButtonHoverSurface);
 
-    // Initialize slider
-    sliderRect = { 1000, 380, 200, 20 }; // Position and size of the slider
+    // Initialize slider frame and slider
+    sliderFrameRect = { 1000, 380, 200, 40 }; // Position and size of the slider frame
+    sliderRect = { 1000, 390, 200, 20 }; // Position and size of the slider
     sliderHandleRect = { 1200, 370, 20, 40 }; // Position and size of the slider handle (100% volume at far right)
 
     // Initialize track buttons
@@ -90,6 +97,7 @@ Setting::~Setting() {
     TTF_CloseFont(font);
     TTF_Quit();
     SDL_DestroyTexture(backgroundTexture);
+    SDL_DestroyTexture(sliderFrameTexture);
     SDL_DestroyTexture(sliderHandleTexture);
     SDL_DestroyTexture(sliderHandleHoverTexture);
     SDL_DestroyTexture(leftButtonTexture);
@@ -146,14 +154,14 @@ void Setting::handleSliderEvent(SDL_Event& e, int& volume) {
     if (dragging) {
         sliderHandleRect.x = x - sliderHandleRect.w / 2;
 
-        if (sliderHandleRect.x < sliderRect.x) {
-            sliderHandleRect.x = sliderRect.x;
+        if (sliderHandleRect.x < sliderFrameRect.x) {
+            sliderHandleRect.x = sliderFrameRect.x;
         }
-        if (sliderHandleRect.x > sliderRect.x + sliderRect.w - sliderHandleRect.w) {
-            sliderHandleRect.x = sliderRect.x + sliderRect.w - sliderHandleRect.w;
+        if (sliderHandleRect.x > sliderFrameRect.x + sliderFrameRect.w - sliderHandleRect.w) {
+            sliderHandleRect.x = sliderFrameRect.x + sliderFrameRect.w - sliderHandleRect.w;
         }
 
-        volume = (sliderHandleRect.x - sliderRect.x) * 100 / (sliderRect.w - sliderHandleRect.w); // Assuming volume is in percentage
+        volume = (sliderHandleRect.x - sliderFrameRect.x) * 100 / (sliderFrameRect.w - sliderHandleRect.w); // Assuming volume is in percentage
         Mix_VolumeMusic(volume);
     }
 }
@@ -174,9 +182,13 @@ void Setting::handleButtonEvent(SDL_Event& e, int x, int y, int& currentTrack) {
 void Setting::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
-    // Render slider
+    // Render slider (filled part of the slider bar)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black color for slider
+    sliderRect.w = sliderHandleRect.x + sliderHandleRect.w / 2 - sliderRect.x; // Adjust slider length based on handle position
     SDL_RenderFillRect(renderer, &sliderRect);
+
+    // Render slider frame on top of slider
+    SDL_RenderCopy(renderer, sliderFrameTexture, NULL, &sliderFrameRect);
 
     // Render slider handle with hover effect
     if (sliderHandleHover) {
@@ -209,11 +221,11 @@ void Setting::render(SDL_Renderer* renderer) {
     SDL_DestroyTexture(trackNameTexture);
 
     // Render volume level
-    std::string volumeText = std::to_string((sliderHandleRect.x - sliderRect.x) * 100 / (sliderRect.w - sliderHandleRect.w)) + "%";
+    std::string volumeText = std::to_string((sliderHandleRect.x - sliderFrameRect.x) * 100 / (sliderFrameRect.w - sliderHandleRect.w)) + "%";
     SDL_Texture* volumeTexture = createTextTexture(renderer, volumeText, textColor);
-    SDL_Rect volumeRect = { sliderRect.x + sliderRect.w + 10, sliderRect.y - 10, 50, 30 }; // Position of the volume text
+    SDL_Rect volumeRect = { sliderFrameRect.x + sliderFrameRect.w + 10, sliderFrameRect.y - 10, 50, 30 }; // Position of the volume text
     SDL_RenderCopy(renderer, volumeTexture, NULL, &volumeRect);
-    SDL_DestroyTexture(volumeTexture);
+    SDL_DestroyTexture(volumeTexture); 
 }
 
 SDL_Texture* Setting::createTextTexture(SDL_Renderer* renderer, const std::string& text, SDL_Color color) {

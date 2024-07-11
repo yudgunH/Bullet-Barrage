@@ -24,6 +24,7 @@ private:
     SDL_Color hoverColor;
 
     SDL_Texture* backgroundTexture;
+    SDL_Texture* sliderFrameTexture;
     SDL_Texture* sliderHandleTexture;
     SDL_Texture* sliderHandleHoverTexture;
     SDL_Texture* leftButtonTexture;
@@ -31,6 +32,7 @@ private:
     SDL_Texture* rightButtonTexture;
     SDL_Texture* rightButtonHoverTexture;
 
+    SDL_Rect sliderFrameRect;
     SDL_Rect sliderRect;
     SDL_Rect sliderHandleRect;
     SDL_Rect prevButtonRect;
