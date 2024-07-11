@@ -27,7 +27,7 @@ private:
     SDL_Color textColor;
     SDL_Color hoverColor;
 
-    Background* background; // Add Background member
+    Background* background;
 
     SDL_Texture* createTextTexture(SDL_Renderer* renderer, const std::string& text, SDL_Color color);
 };

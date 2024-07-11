@@ -1,4 +1,5 @@
 ﻿#include "Menu.h"
+#include "main.h" // Thêm dòng này để sử dụng các giá trị khai báo trong main.h
 #include <iostream>
 #include <SDL_image.h>
 
@@ -60,13 +61,13 @@ void Menu::handleEvent(SDL_Event& e, bool& quit, int& currentScreen) {
                 buttons[i].hover = true;
                 if (e.type == SDL_MOUSEBUTTONDOWN) {
                     if (buttons[i].label == "Play") {
-                        currentScreen = 1; // Main game screen
+                        currentScreen = GAME;
                     }
                     else if (buttons[i].label == "Score") {
-                        currentScreen = 2; // Score screen
+                        currentScreen = SCORE;
                     }
                     else if (buttons[i].label == "Setting") {
-                        currentScreen = 3; // Setting screen
+                        currentScreen = SETTING;
                     }
                     else if (buttons[i].label == "Exit") {
                         quit = true;

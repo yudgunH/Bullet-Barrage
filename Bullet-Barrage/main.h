@@ -9,4 +9,13 @@
 #include "Player.h"
 #include "Background.h"
 
+
+enum Screen {
+    MENU,
+    GAME,
+    SCORE,
+    SETTING
+};
+
+
 #endif // MAIN_H

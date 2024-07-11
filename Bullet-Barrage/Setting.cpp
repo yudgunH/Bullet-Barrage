@@ -5,7 +5,7 @@
 #include <filesystem>
 
 Setting::Setting(SDL_Renderer* renderer)
-    : dragging(false), sliderHandleHover(false), leftButtonHover(false), rightButtonHover(false), currentTrack(0), trackNameTexture(nullptr), music(nullptr) {
+    : dragging(false), sliderHandleHover(false), leftButtonHover(false), rightButtonHover(false), backButtonHover(false), currentTrack(0), trackNameTexture(nullptr), music(nullptr) {
 
     if (TTF_Init() == -1) {
         std::cerr << "TTF_Init: " << TTF_GetError() << std::endl;
@@ -64,14 +64,26 @@ Setting::Setting(SDL_Renderer* renderer)
     rightButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, rightButtonHoverSurface);
     SDL_FreeSurface(rightButtonHoverSurface);
 
+    // Load back button texture and hover texture
+    SDL_Surface* backButtonSurface = IMG_Load("../assets/img/UI/BackButton.png");
+    backButtonTexture = SDL_CreateTextureFromSurface(renderer, backButtonSurface);
+    SDL_FreeSurface(backButtonSurface);
+
+    SDL_Surface* backButtonHoverSurface = IMG_Load("../assets/img/UI/BackButtonHover.png");
+    backButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, backButtonHoverSurface);
+    SDL_FreeSurface(backButtonHoverSurface);
+
     // Initialize slider frame and slider
-    sliderFrameRect = { 800, 380, 400, 40 }; // Position and size of the slider frame
-    sliderRect = { 800, 390, 0, 20 }; // Initialize width to 0
-    sliderHandleRect = { 800 + 400 - 20, 380, 20, 40 }; // Position and size of the slider handle (100% volume at far right)
+    sliderFrameRect = { 750, 410, 400, 45 }; // Position and size of the slider frame
+    sliderRect = { 755, 415, 0, 35 }; // Initialize width to 0
+    sliderHandleRect = { 750 + 400 - 20, 410, 20, 50 }; // Position and size of the slider handle (100% volume at far right)
 
     // Initialize track buttons with more distance
     prevButtonRect = { 700, 540, 40, 40 }; // Position and size of the previous button
     nextButtonRect = { 1250, 540, 40, 40 }; // Position and size of the next button
+
+    // Initialize back button at the top left corner and enlarge it
+    backButtonRect = { 50, 50, 98, 34 }; // Increased size of the back button
 
     // Initialize track names and track files
     for (const auto& entry : std::filesystem::directory_iterator("../assets/audio")) {
@@ -106,11 +118,13 @@ Setting::~Setting() {
     SDL_DestroyTexture(rightButtonTexture);
     SDL_DestroyTexture(rightButtonHoverTexture);
     SDL_DestroyTexture(trackNameTexture);
+    SDL_DestroyTexture(backButtonTexture);
+    SDL_DestroyTexture(backButtonHoverTexture);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
 }
 
-void Setting::handleEvent(SDL_Event& e, bool& quit, int& volume, int& currentTrack) {
+void Setting::handleEvent(SDL_Event& e, bool& quit, int& volume, int& currentTrack, bool& goToMenu) {
     if (e.type == SDL_QUIT) {
         quit = true;
     }
@@ -118,7 +132,7 @@ void Setting::handleEvent(SDL_Event& e, bool& quit, int& volume, int& currentTra
         int x, y;
         SDL_GetMouseState(&x, &y);
         handleSliderEvent(e, volume);
-        handleButtonEvent(e, x, y, currentTrack);
+        handleButtonEvent(e, x, y, currentTrack, goToMenu);
 
         // Check if mouse is over slider handle
         sliderHandleHover = (x > sliderHandleRect.x && x < sliderHandleRect.x + sliderHandleRect.w &&
@@ -130,8 +144,12 @@ void Setting::handleEvent(SDL_Event& e, bool& quit, int& volume, int& currentTra
         rightButtonHover = (x > nextButtonRect.x && x < nextButtonRect.x + nextButtonRect.w &&
             y > nextButtonRect.y && y < nextButtonRect.y + nextButtonRect.h);
 
+        // Check if mouse is over back button
+        backButtonHover = (x > backButtonRect.x && x < backButtonRect.x + backButtonRect.w &&
+            y > backButtonRect.y && y < backButtonRect.y + backButtonRect.h);
+
         // Change cursor to hand if hovering over slider handle or buttons
-        if (sliderHandleHover || leftButtonHover || rightButtonHover) {
+        if (sliderHandleHover || leftButtonHover || rightButtonHover || backButtonHover) {
             SDL_SetCursor(SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND));
         }
         else {
@@ -171,7 +189,7 @@ void Setting::handleSliderEvent(SDL_Event& e, int& volume) {
     sliderRect.w = sliderHandleRect.x + sliderHandleRect.w / 2 - sliderRect.x;
 }
 
-void Setting::handleButtonEvent(SDL_Event& e, int x, int y, int& currentTrack) {
+void Setting::handleButtonEvent(SDL_Event& e, int x, int y, int& currentTrack, bool& goToMenu) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         if (leftButtonHover) {
             currentTrack = (currentTrack - 1 + trackNames.size()) % trackNames.size();
@@ -180,6 +198,9 @@ void Setting::handleButtonEvent(SDL_Event& e, int x, int y, int& currentTrack) {
         if (rightButtonHover) {
             currentTrack = (currentTrack + 1) % trackNames.size();
             changeTrack(currentTrack);
+        }
+        if (backButtonHover) {
+            goToMenu = true;
         }
     }
 }
@@ -260,6 +281,14 @@ void Setting::render(SDL_Renderer* renderer) {
     }
     else {
         SDL_RenderCopy(renderer, rightButtonTexture, NULL, &nextButtonRect);
+    }
+
+    // Render back button with hover effect
+    if (backButtonHover) {
+        SDL_RenderCopy(renderer, backButtonHoverTexture, NULL, &backButtonRect);
+    }
+    else {
+        SDL_RenderCopy(renderer, backButtonTexture, NULL, &backButtonRect);
     }
 
     // Render current track name
