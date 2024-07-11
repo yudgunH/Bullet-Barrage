@@ -3,7 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_ttf.h>
-#include <SDL_mixer.h> // Include SDL_mixer
+#include <SDL_mixer.h>
 #include <string>
 #include <vector>
 
@@ -24,6 +24,12 @@ private:
     SDL_Color hoverColor;
 
     SDL_Texture* backgroundTexture;
+    SDL_Texture* sliderHandleTexture;
+    SDL_Texture* sliderHandleHoverTexture;
+    SDL_Texture* leftButtonTexture;
+    SDL_Texture* leftButtonHoverTexture;
+    SDL_Texture* rightButtonTexture;
+    SDL_Texture* rightButtonHoverTexture;
 
     SDL_Rect sliderRect;
     SDL_Rect sliderHandleRect;
@@ -31,11 +37,14 @@ private:
     SDL_Rect nextButtonRect;
 
     bool dragging;
+    bool sliderHandleHover;
+    bool leftButtonHover;
+    bool rightButtonHover;
 
     std::vector<std::string> trackNames;
     int currentTrack;
 
-    Mix_Music* music; // SDL_mixer music
+    Mix_Music* music;
 };
 
 #endif // SETTING_H
