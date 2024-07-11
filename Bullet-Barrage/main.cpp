@@ -43,7 +43,7 @@ int main(int argc, char* args[]) {
     Menu menu(renderer);
     Setting setting(renderer);
     Player player(renderer, "../assets/img/character");
-    Background background(renderer, "../assets/img/cities");
+    Background background(renderer, "../assets/img/cities"); // Ensure this path is correct
 
     bool quit = false;
     SDL_Event e;
@@ -94,13 +94,16 @@ int main(int argc, char* args[]) {
 
         switch (currentScreen) {
         case MENU:
+            background.update();
+            background.render(renderer);
             menu.render(renderer);
             break;
         case SETTING:
             setting.render(renderer);
             break;
         case GAME:
-            background.render(renderer);
+            background.update(); // Update background animation
+            background.render(renderer); // Render background
             player.move();
             player.render(renderer);
             break;
