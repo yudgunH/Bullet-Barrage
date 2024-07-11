@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Program Files\SDL_lib\SDL2_image-devel-2.8.2-VC\SDL2_image-2.8.2\include;C:\Program Files\SDL_lib\SDL2_mixer-devel-2.8.0-VC\SDL2_mixer-2.8.0\include;C:\Program Files\SDL_lib\SDL2_ttf-devel-2.22.0-VC\SDL2_ttf-2.22.0\include;C:\Program Files\SDL_lib\SDL2-devel-2.30.5-VC\SDL2-2.30.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Program Files\SDL_lib\SDL2_image-devel-2.8.2-VC\SDL2_image-2.8.2\include;C:\Program Files\SDL_lib\SDL2_mixer-devel-2.8.0-VC\SDL2_mixer-2.8.0\include;C:\Program Files\SDL_lib\SDL2_ttf-devel-2.22.0-VC\SDL2_ttf-2.22.0\include;C:\Program Files\SDL_lib\SDL2-devel-2.30.5-VC\SDL2-2.30.5\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

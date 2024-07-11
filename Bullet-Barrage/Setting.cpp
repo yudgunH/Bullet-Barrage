@@ -2,9 +2,10 @@
 #include <iostream>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
+#include <filesystem>
 
 Setting::Setting(SDL_Renderer* renderer)
-    : dragging(false), sliderHandleHover(false), leftButtonHover(false), rightButtonHover(false), currentTrack(0) {
+    : dragging(false), sliderHandleHover(false), leftButtonHover(false), rightButtonHover(false), currentTrack(0), trackNameTexture(nullptr), music(nullptr) {
 
     if (TTF_Init() == -1) {
         std::cerr << "TTF_Init: " << TTF_GetError() << std::endl;
@@ -64,17 +65,19 @@ Setting::Setting(SDL_Renderer* renderer)
     SDL_FreeSurface(rightButtonHoverSurface);
 
     // Initialize slider frame and slider
-    sliderFrameRect = { 1000, 380, 200, 40 }; // Position and size of the slider frame
-    sliderRect = { 1000, 390, 200, 20 }; // Position and size of the slider
-    sliderHandleRect = { 1200, 370, 20, 40 }; // Position and size of the slider handle (100% volume at far right)
+    sliderFrameRect = { 800, 380, 400, 40 }; // Position and size of the slider frame
+    sliderRect = { 800, 390, 0, 20 }; // Initialize width to 0
+    sliderHandleRect = { 800 + 400 - 20, 380, 20, 40 }; // Position and size of the slider handle (100% volume at far right)
 
-    // Initialize track buttons
-    prevButtonRect = { 1000 - 50, 540, 40, 40 }; // Position and size of the previous button
-    nextButtonRect = { 1200 + 10, 540, 40, 40 }; // Position and size of the next button
+    // Initialize track buttons with more distance
+    prevButtonRect = { 700, 540, 40, 40 }; // Position and size of the previous button
+    nextButtonRect = { 1250, 540, 40, 40 }; // Position and size of the next button
 
-    // Initialize track names
-    trackNames.push_back("Swift Shooters");
-    // Add more tracks if needed
+    // Initialize track names and track files
+    for (const auto& entry : std::filesystem::directory_iterator("../assets/audio")) {
+        trackFiles.push_back(entry.path().string());
+        trackNames.push_back(entry.path().filename().string());
+    }
 
     // Initialize SDL_mixer
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
@@ -82,15 +85,13 @@ Setting::Setting(SDL_Renderer* renderer)
         exit(1);
     }
 
-    // Load music
-    music = Mix_LoadMUS("../assets/audio/Soundtrack - Swift Shooters.mp3");
-    if (music == NULL) {
-        std::cerr << "Failed to load music! SDL_mixer Error: " << Mix_GetError() << std::endl;
-        exit(1);
-    }
+    // Load the first track
+    changeTrack(0);
 
-    // Play music
-    Mix_PlayMusic(music, -1);
+    // Set volume to 100%
+    Mix_VolumeMusic(100);
+    sliderHandleRect.x = sliderFrameRect.x + sliderFrameRect.w - sliderHandleRect.w;
+    sliderRect.w = sliderHandleRect.x + sliderHandleRect.w / 2 - sliderRect.x;
 }
 
 Setting::~Setting() {
@@ -104,6 +105,7 @@ Setting::~Setting() {
     SDL_DestroyTexture(leftButtonHoverTexture);
     SDL_DestroyTexture(rightButtonTexture);
     SDL_DestroyTexture(rightButtonHoverTexture);
+    SDL_DestroyTexture(trackNameTexture);
     Mix_FreeMusic(music);
     Mix_CloseAudio();
 }
@@ -164,19 +166,65 @@ void Setting::handleSliderEvent(SDL_Event& e, int& volume) {
         volume = (sliderHandleRect.x - sliderFrameRect.x) * 100 / (sliderFrameRect.w - sliderHandleRect.w); // Assuming volume is in percentage
         Mix_VolumeMusic(volume);
     }
+
+    // Update slider width based on handle position
+    sliderRect.w = sliderHandleRect.x + sliderHandleRect.w / 2 - sliderRect.x;
 }
 
 void Setting::handleButtonEvent(SDL_Event& e, int x, int y, int& currentTrack) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         if (leftButtonHover) {
             currentTrack = (currentTrack - 1 + trackNames.size()) % trackNames.size();
-            // Handle music change logic
+            changeTrack(currentTrack);
         }
         if (rightButtonHover) {
             currentTrack = (currentTrack + 1) % trackNames.size();
-            // Handle music change logic
+            changeTrack(currentTrack);
         }
     }
+}
+
+void Setting::changeTrack(int trackIndex) {
+    if (music != nullptr) {
+        Mix_HaltMusic();
+        Mix_FreeMusic(music);
+    }
+    music = Mix_LoadMUS(trackFiles[trackIndex].c_str());
+    if (music == NULL) {
+        std::cerr << "Failed to load music! SDL_mixer Error: " << Mix_GetError() << std::endl;
+    }
+    else {
+        Mix_PlayMusic(music, -1);
+    }
+
+    // Update track name texture
+    if (trackNameTexture != nullptr) {
+        SDL_DestroyTexture(trackNameTexture);
+    }
+
+    std::string trackName = trackNames[trackIndex];
+
+    // Remove "Soundtrack - " prefix if it exists
+    const std::string prefix = "Soundtrack - ";
+    if (trackName.find(prefix) == 0) {
+        trackName = trackName.substr(prefix.length());
+    }
+
+    // Calculate the maximum width for the track name
+    int maxWidth = nextButtonRect.x - prevButtonRect.x - prevButtonRect.w - 20; // 20 pixels for padding
+
+    // Shorten the track name if it's too long
+    int textWidth, textHeight;
+    TTF_SizeText(font, trackName.c_str(), &textWidth, &textHeight);
+    while (textWidth > maxWidth) {
+        trackName = trackName.substr(0, trackName.length() - 4) + "...";
+        TTF_SizeText(font, trackName.c_str(), &textWidth, &textHeight);
+    }
+
+    trackNameTexture = createTextTexture(SDL_GetRenderer(SDL_GetWindowFromID(1)), trackName, textColor);
+
+    // Update track name position based on texture width
+    trackNameRect = { (prevButtonRect.x + prevButtonRect.w + nextButtonRect.x) / 2 - textWidth / 2, prevButtonRect.y, textWidth, textHeight };
 }
 
 void Setting::render(SDL_Renderer* renderer) {
@@ -191,6 +239,7 @@ void Setting::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, sliderFrameTexture, NULL, &sliderFrameRect);
 
     // Render slider handle with hover effect
+    sliderHandleRect.y = sliderFrameRect.y; // Align slider handle Y with slider frame Y
     if (sliderHandleHover) {
         SDL_RenderCopy(renderer, sliderHandleHoverTexture, NULL, &sliderHandleRect);
     }
@@ -214,18 +263,16 @@ void Setting::render(SDL_Renderer* renderer) {
     }
 
     // Render current track name
-    std::string trackName = trackNames[currentTrack];
-    SDL_Rect trackNameRect = { 1050, 540, 100, 40 }; // Position of the track name
-    SDL_Texture* trackNameTexture = createTextTexture(renderer, trackName, textColor);
-    SDL_RenderCopy(renderer, trackNameTexture, NULL, &trackNameRect);
-    SDL_DestroyTexture(trackNameTexture);
+    if (trackNameTexture != nullptr) {
+        SDL_RenderCopy(renderer, trackNameTexture, NULL, &trackNameRect);
+    }
 
     // Render volume level
     std::string volumeText = std::to_string((sliderHandleRect.x - sliderFrameRect.x) * 100 / (sliderFrameRect.w - sliderHandleRect.w)) + "%";
     SDL_Texture* volumeTexture = createTextTexture(renderer, volumeText, textColor);
-    SDL_Rect volumeRect = { sliderFrameRect.x + sliderFrameRect.w + 10, sliderFrameRect.y - 10, 50, 30 }; // Position of the volume text
+    SDL_Rect volumeRect = { sliderFrameRect.x + sliderFrameRect.w + 10, sliderFrameRect.y + 5, 50, 30 }; // Position of the volume text
     SDL_RenderCopy(renderer, volumeTexture, NULL, &volumeRect);
-    SDL_DestroyTexture(volumeTexture); 
+    SDL_DestroyTexture(volumeTexture);
 }
 
 SDL_Texture* Setting::createTextTexture(SDL_Renderer* renderer, const std::string& text, SDL_Color color) {
