@@ -140,6 +140,8 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayScreen.cpp" />
+    <ClCompile Include="Score.cpp" />
+    <ClCompile Include="ScoreScreen.cpp" />
     <ClCompile Include="Setting.cpp" />
     <ClCompile Include="Threat.cpp" />
   </ItemGroup>
@@ -149,6 +151,8 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayScreen.h" />
+    <ClInclude Include="Score.h" />
+    <ClInclude Include="ScoreScreen.h" />
     <ClInclude Include="Setting.h" />
     <ClInclude Include="Threat.h" />
   </ItemGroup>

@@ -6,11 +6,11 @@
 #include "Background.h"
 #include "Threat.h"
 #include "Setting.h"
-#include "main.h"
+#include "Score.h"
 
 class PlayScreen {
 public:
-    PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting);
+    PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score);
     ~PlayScreen();
 
     void handleEvent(SDL_Event& e);
@@ -18,6 +18,8 @@ public:
     void render(SDL_Renderer* renderer);
 
 private:
+    SDL_Renderer* renderer;  // Thêm thành viên này
+
     Player* player;
     Background* background;
     Threat* bullet;
@@ -48,6 +50,13 @@ private:
     int previousVolume;
     Setting* setting;  // Thêm con trỏ tới Setting
     int* currentScreen;
+
+    Uint32 startTime;  // Thời gian bắt đầu
+    SDL_Texture* scoreTexture;
+    SDL_Rect scoreRect;
+    Score* score;  // Thêm con trỏ tới Score
+
+    void updateScoreTexture();
 };
 
 #endif // PLAYSCREEN_H

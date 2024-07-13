@@ -1,10 +1,11 @@
 ﻿#include "PlayScreen.h"
 #include "main.h"  // Bao gồm main.h để có khai báo enum Screen
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <iostream>
 
-PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting)
-    : menuButtonHover(false), miniMenuActive(false), homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen), setting(setting), previousVolume(50) {
+PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
+    : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen), setting(setting), previousVolume(50), startTime(SDL_GetTicks()), score(score) {
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
     bullet = new Threat(renderer, "bullet.png", Threat::BULLET);
@@ -83,6 +84,11 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting)
     homeButtonRect = { miniMenuRect.x + buttonSpacing, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
     returnButtonRect = { homeButtonRect.x + buttonWidth + buttonSpacing, homeButtonRect.y, buttonWidth, buttonHeight };
     audioButtonRect = { returnButtonRect.x + buttonWidth + buttonSpacing, returnButtonRect.y, buttonWidth, buttonHeight };
+
+    // Initialize score texture
+    TTF_Init();
+    scoreRect = { menuButtonRect.x - 100, menuButtonRect.y, 90, 50 };
+    updateScoreTexture();
 }
 
 PlayScreen::~PlayScreen() {
@@ -102,6 +108,7 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(audioButtonHoverTexture);
     SDL_DestroyTexture(audioButtonOffTexture);
     SDL_DestroyTexture(audioButtonOffHoverTexture);
+    SDL_DestroyTexture(scoreTexture);
 }
 
 void PlayScreen::handleEvent(SDL_Event& e) {
@@ -155,6 +162,8 @@ void PlayScreen::handleEvent(SDL_Event& e) {
 
             if (e.type == SDL_MOUSEBUTTONDOWN && menuButtonHover) {
                 miniMenuActive = true;
+                Uint32 endTime = SDL_GetTicks();
+                score->addScore((endTime - startTime) / 1000);  // Lưu điểm số hiện tại vào Score
             }
         }
     }
@@ -167,6 +176,9 @@ void PlayScreen::update() {
         bullet->update();
         meteor->update();
     }
+
+    // Cập nhật texture của điểm số
+    updateScoreTexture();
 }
 
 void PlayScreen::render(SDL_Renderer* renderer) {
@@ -181,6 +193,8 @@ void PlayScreen::render(SDL_Renderer* renderer) {
     else {
         SDL_RenderCopy(renderer, menuButtonTexture, NULL, &menuButtonRect);
     }
+
+    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);  // Hiển thị điểm số
 
     if (miniMenuActive) {
         SDL_RenderCopy(renderer, miniMenuTexture, NULL, &miniMenuRect);
@@ -216,4 +230,32 @@ void PlayScreen::render(SDL_Renderer* renderer) {
             }
         }
     }
+}
+
+void PlayScreen::updateScoreTexture() {
+    Uint32 currentTime = SDL_GetTicks();
+    Uint32 elapsedTime = (currentTime - startTime) / 1000;  // Thời gian tính bằng giây
+
+    TTF_Font* font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24);
+    if (font == NULL) {
+        std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    SDL_Color textColor = { 0, 0, 0, 255 };
+    std::string scoreText = "Score: " + std::to_string(elapsedTime);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
+    if (textSurface == NULL) {
+        std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        TTF_CloseFont(font);
+        return;
+    }
+
+    scoreTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+    if (scoreTexture == NULL) {
+        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+    }
+
+    SDL_FreeSurface(textSurface);
+    TTF_CloseFont(font);
 }

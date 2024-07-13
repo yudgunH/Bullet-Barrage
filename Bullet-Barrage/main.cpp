@@ -3,8 +3,11 @@
 #include "Menu.h"
 #include "Setting.h"
 #include "PlayScreen.h"
-#include "main.h"  // Bao gồm main.h để có khai báo enum Screen
+#include "ScoreScreen.h"
+#include "main.h"
 #include "SDL_mixer.h"
+#include "Score.h"
+
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -35,8 +38,10 @@ int main(int argc, char* args[]) {
 
     Menu menu(renderer);
     Setting setting(renderer);
+    Score score;
     int currentScreen = MENU;
-    PlayScreen playScreen(renderer, &currentScreen, &setting);
+    PlayScreen playScreen(renderer, &currentScreen, &setting, &score);
+    ScoreScreen scoreScreen(renderer, &score);
 
     bool quit = false;
     SDL_Event e;
@@ -70,10 +75,7 @@ int main(int argc, char* args[]) {
                     }
                     break;
                 case SCORE:
-                    // Handle score screen events here
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
-                    }
+                    scoreScreen.handleEvent(e, &currentScreen);
                     break;
                 }
             }
@@ -94,7 +96,7 @@ int main(int argc, char* args[]) {
             playScreen.render(renderer);
             break;
         case SCORE:
-            // Render score screen here
+            scoreScreen.render(renderer);
             break;
         }
 
