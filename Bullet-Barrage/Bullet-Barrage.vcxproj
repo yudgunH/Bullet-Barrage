@@ -156,6 +156,9 @@
     <ClInclude Include="Setting.h" />
     <ClInclude Include="Threat.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="scores.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

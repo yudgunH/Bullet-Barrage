@@ -8,6 +8,7 @@
 #include "SDL_mixer.h"
 #include "Score.h"
 
+const std::string scoreFile = "scores.txt";
 
 int main(int argc, char* args[]) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
@@ -39,6 +40,7 @@ int main(int argc, char* args[]) {
     Menu menu(renderer);
     Setting setting(renderer);
     Score score;
+    score.loadScores(scoreFile);  // Tải điểm số từ file
     int currentScreen = MENU;
     PlayScreen playScreen(renderer, &currentScreen, &setting, &score);
     ScoreScreen scoreScreen(renderer, &score);
@@ -102,6 +104,8 @@ int main(int argc, char* args[]) {
 
         SDL_RenderPresent(renderer);
     }
+
+    score.saveScores(scoreFile);  // Lưu điểm số vào file trước khi thoát
 
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);

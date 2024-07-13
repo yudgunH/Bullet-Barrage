@@ -84,7 +84,7 @@ Setting::Setting(SDL_Renderer* renderer)
     nextButtonRect = { 1250, 540, 40, 40 }; // Position and size of the next button
 
     // Initialize back button at the top left corner and enlarge it
-    backButtonRect = { 50, 50, 190, 190 }; // Increased size of the back button
+    backButtonRect = { 50, 50, 90, 90 }; // Increased size of the back button
 
     // Initialize track names and track files
     for (const auto& entry : std::filesystem::directory_iterator("../assets/audio")) {

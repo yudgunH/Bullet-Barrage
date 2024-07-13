@@ -1,4 +1,3 @@
-#pragma once
 #ifndef SCORESCREEN_H
 #define SCORESCREEN_H
 
@@ -19,6 +18,11 @@ private:
     SDL_Texture* scoreTexture;
     SDL_Rect scoreRect;
     Score* score;
+
+    SDL_Texture* backButtonTexture;
+    SDL_Texture* backButtonHoverTexture;
+    SDL_Rect backButtonRect;
+    bool backButtonHover;
 
     void updateScoreTexture(SDL_Renderer* renderer);
 };
