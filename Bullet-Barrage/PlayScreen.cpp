@@ -1,9 +1,10 @@
-#include "PlayScreen.h"
+﻿#include "PlayScreen.h"
+#include "main.h"  // Bao gồm main.h để có khai báo enum Screen
 #include <SDL_image.h>
 #include <iostream>
 
-PlayScreen::PlayScreen(SDL_Renderer* renderer)
-    : menuButtonHover(false), miniMenuActive(false) {
+PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting)
+    : menuButtonHover(false), miniMenuActive(false), homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen), setting(setting), previousVolume(50) {
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
     bullet = new Threat(renderer, "bullet.png", Threat::BULLET);
@@ -20,6 +21,39 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer)
 
     SDL_Surface* miniMenuSurface = IMG_Load("../assets/img/UI/miniMenu.png");
     miniMenuTexture = SDL_CreateTextureFromSurface(renderer, miniMenuSurface);
+
+    // Load other button textures
+    SDL_Surface* homeButtonSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_Home.png");
+    homeButtonTexture = SDL_CreateTextureFromSurface(renderer, homeButtonSurface);
+    SDL_FreeSurface(homeButtonSurface);
+
+    SDL_Surface* homeButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_Home.png");
+    homeButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, homeButtonHoverSurface);
+    SDL_FreeSurface(homeButtonHoverSurface);
+
+    SDL_Surface* returnButtonSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_Return.png");
+    returnButtonTexture = SDL_CreateTextureFromSurface(renderer, returnButtonSurface);
+    SDL_FreeSurface(returnButtonSurface);
+
+    SDL_Surface* returnButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_Return.png");
+    returnButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, returnButtonHoverSurface);
+    SDL_FreeSurface(returnButtonHoverSurface);
+
+    SDL_Surface* audioButtonSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_Audio.png");
+    audioButtonTexture = SDL_CreateTextureFromSurface(renderer, audioButtonSurface);
+    SDL_FreeSurface(audioButtonSurface);
+
+    SDL_Surface* audioButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_Audio.png");
+    audioButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, audioButtonHoverSurface);
+    SDL_FreeSurface(audioButtonHoverSurface);
+
+    SDL_Surface* audioButtonOffSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_AudioOff.png");
+    audioButtonOffTexture = SDL_CreateTextureFromSurface(renderer, audioButtonOffSurface);
+    SDL_FreeSurface(audioButtonOffSurface);
+
+    SDL_Surface* audioButtonOffHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_AudioOff.png");
+    audioButtonOffHoverTexture = SDL_CreateTextureFromSurface(renderer, audioButtonOffHoverSurface);
+    SDL_FreeSurface(audioButtonOffHoverSurface);
 
     // Calculate miniMenu size while keeping the aspect ratio
     int originalWidth = miniMenuSurface->w;
@@ -40,6 +74,11 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer)
 
     // Initialize menu button rect (top-right corner)
     menuButtonRect = { 1881 - 70, 20, 50, 50 }; // Adjust the size and position as needed
+
+    // Initialize other buttons rects
+    homeButtonRect = { miniMenuRect.x + 50, miniMenuRect.y + miniMenuRect.h - 100, 50, 50 };
+    returnButtonRect = { miniMenuRect.x + (miniMenuRect.w / 2) - 25, miniMenuRect.y + miniMenuRect.h - 100, 50, 50 };
+    audioButtonRect = { miniMenuRect.x + miniMenuRect.w - 100, miniMenuRect.y + miniMenuRect.h - 100, 50, 50 };
 }
 
 PlayScreen::~PlayScreen() {
@@ -51,12 +90,54 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(menuButtonTexture);
     SDL_DestroyTexture(menuButtonHoverTexture);
     SDL_DestroyTexture(miniMenuTexture);
+    SDL_DestroyTexture(homeButtonTexture);
+    SDL_DestroyTexture(homeButtonHoverTexture);
+    SDL_DestroyTexture(returnButtonTexture);
+    SDL_DestroyTexture(returnButtonHoverTexture);
+    SDL_DestroyTexture(audioButtonTexture);
+    SDL_DestroyTexture(audioButtonHoverTexture);
+    SDL_DestroyTexture(audioButtonOffTexture);
+    SDL_DestroyTexture(audioButtonOffHoverTexture);
 }
 
 void PlayScreen::handleEvent(SDL_Event& e) {
     if (miniMenuActive) {
         if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
             miniMenuActive = false;
+        }
+
+        if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
+            int x, y;
+            SDL_GetMouseState(&x, &y);
+
+            homeButtonHover = (x > homeButtonRect.x && x < homeButtonRect.x + homeButtonRect.w &&
+                y > homeButtonRect.y && y < homeButtonRect.y + homeButtonRect.h);
+            returnButtonHover = (x > returnButtonRect.x && x < returnButtonRect.x + returnButtonRect.w &&
+                y > returnButtonRect.y && y < returnButtonRect.y + returnButtonRect.h);
+            audioButtonHover = (x > audioButtonRect.x && x < audioButtonRect.x + audioButtonRect.w &&
+                y > audioButtonRect.y && y < audioButtonRect.y + audioButtonRect.h);
+
+            if (e.type == SDL_MOUSEBUTTONDOWN) {
+                if (homeButtonHover) {
+                    // Chuyển sang màn hình Menu
+                    *currentScreen = MENU;
+                }
+                else if (returnButtonHover) {
+                    // Tắt miniMenu và quay lại màn hình PlayScreen
+                    miniMenuActive = false;
+                }
+                else if (audioButtonHover) {
+                    // Handle audio button click
+                    if (audioOn) {
+                        previousVolume = setting->getVolume();
+                        setting->setVolume(0);
+                    }
+                    else {
+                        setting->setVolume(previousVolume);
+                    }
+                    audioOn = !audioOn;
+                }
+            }
         }
     }
     else {
@@ -99,5 +180,36 @@ void PlayScreen::render(SDL_Renderer* renderer) {
 
     if (miniMenuActive) {
         SDL_RenderCopy(renderer, miniMenuTexture, NULL, &miniMenuRect);
+
+        if (homeButtonHover) {
+            SDL_RenderCopy(renderer, homeButtonHoverTexture, NULL, &homeButtonRect);
+        }
+        else {
+            SDL_RenderCopy(renderer, homeButtonTexture, NULL, &homeButtonRect);
+        }
+
+        if (returnButtonHover) {
+            SDL_RenderCopy(renderer, returnButtonHoverTexture, NULL, &returnButtonRect);
+        }
+        else {
+            SDL_RenderCopy(renderer, returnButtonTexture, NULL, &returnButtonRect);
+        }
+
+        if (audioButtonHover) {
+            if (audioOn) {
+                SDL_RenderCopy(renderer, audioButtonHoverTexture, NULL, &audioButtonRect);
+            }
+            else {
+                SDL_RenderCopy(renderer, audioButtonOffHoverTexture, NULL, &audioButtonRect);
+            }
+        }
+        else {
+            if (audioOn) {
+                SDL_RenderCopy(renderer, audioButtonTexture, NULL, &audioButtonRect);
+            }
+            else {
+                SDL_RenderCopy(renderer, audioButtonOffTexture, NULL, &audioButtonRect);
+            }
+        }
     }
 }

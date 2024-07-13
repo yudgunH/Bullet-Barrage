@@ -1,11 +1,12 @@
-#include "Setting.h"
+﻿#include "Setting.h"
 #include <iostream>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <filesystem>
+#include "main.h"
 
 Setting::Setting(SDL_Renderer* renderer)
-    : dragging(false), sliderHandleHover(false), leftButtonHover(false), rightButtonHover(false), backButtonHover(false), currentTrack(0), trackNameTexture(nullptr), music(nullptr) {
+    : dragging(false), sliderHandleHover(false), leftButtonHover(false), rightButtonHover(false), backButtonHover(false), currentTrack(0), trackNameTexture(nullptr), music(nullptr), volume(100) {  // Thêm khởi tạo volume
 
     if (TTF_Init() == -1) {
         std::cerr << "TTF_Init: " << TTF_GetError() << std::endl;
@@ -183,6 +184,7 @@ void Setting::handleSliderEvent(SDL_Event& e, int& volume) {
 
         volume = (sliderHandleRect.x - sliderFrameRect.x) * 100 / (sliderFrameRect.w - sliderHandleRect.w); // Assuming volume is in percentage
         Mix_VolumeMusic(volume);
+        this->volume = volume; // Update the class volume variable
     }
 
     // Update slider width based on handle position
@@ -297,7 +299,7 @@ void Setting::render(SDL_Renderer* renderer) {
     }
 
     // Render volume level
-    std::string volumeText = std::to_string((sliderHandleRect.x - sliderFrameRect.x) * 100 / (sliderFrameRect.w - sliderHandleRect.w)) + "%";
+    std::string volumeText = std::to_string(volume) + "%";
     SDL_Texture* volumeTexture = createTextTexture(renderer, volumeText, textColor);
     SDL_Rect volumeRect = { sliderFrameRect.x + sliderFrameRect.w + 10, sliderFrameRect.y + 5, 50, 30 }; // Position of the volume text
     SDL_RenderCopy(renderer, volumeTexture, NULL, &volumeRect);
@@ -324,4 +326,15 @@ SDL_Texture* Setting::createTextTexture(SDL_Renderer* renderer, const std::strin
     SDL_FreeSurface(textSurface);
 
     return textTexture;
+}
+
+int Setting::getVolume() const {
+    return volume;
+}
+
+void Setting::setVolume(int volume) {
+    this->volume = volume;
+    Mix_VolumeMusic(volume);
+    sliderHandleRect.x = sliderFrameRect.x + (volume * (sliderFrameRect.w - sliderHandleRect.w)) / 100;
+    sliderRect.w = sliderHandleRect.x + sliderHandleRect.w / 2 - sliderRect.x;
 }

@@ -6,6 +6,7 @@
 #include <SDL_mixer.h>
 #include <string>
 #include <vector>
+#include "main.h"
 
 class Setting {
 public:
@@ -13,7 +14,11 @@ public:
     ~Setting();
     void handleEvent(SDL_Event& e, bool& quit, int& volume, int& currentTrack, bool& goToMenu);
     void render(SDL_Renderer* renderer);
-    void changeTrack(int trackIndex); // Chuyển hàm này vào phần public
+    void changeTrack(int trackIndex);
+
+    // Thêm các phương thức này
+    int getVolume() const;
+    void setVolume(int volume);
 
 private:
     void handleSliderEvent(SDL_Event& e, int& volume);
@@ -55,6 +60,9 @@ private:
     int currentTrack;
 
     Mix_Music* music;
+
+    // Thêm biến volume
+    int volume;
 };
 
 #endif // SETTING_H
