@@ -1,4 +1,4 @@
-#ifndef THREAT_H
+﻿#ifndef THREAT_H
 #define THREAT_H
 
 #include <SDL.h>
@@ -7,7 +7,12 @@
 
 class Threat {
 public:
-    Threat(SDL_Renderer* renderer, const std::string& path);
+    enum ThreatType {
+        BULLET,
+        METEOR
+    };
+
+    Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type);
     ~Threat();
 
     void update();
@@ -26,7 +31,9 @@ private:
     float x_pos;
     float y_pos;
     float velX;
+    float velY;
     Uint32 lastUpdateTime;
+    ThreatType type;
 };
 
 #endif // THREAT_H

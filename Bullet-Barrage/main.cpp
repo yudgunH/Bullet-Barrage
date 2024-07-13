@@ -4,6 +4,7 @@
 #include "Setting.h"
 #include "Player.h"
 #include "Background.h"
+#include "Threat.h" // Thêm dòng này để sử dụng class Threat
 #include "SDL_mixer.h"
 
 enum Screen {
@@ -44,6 +45,10 @@ int main(int argc, char* args[]) {
     Setting setting(renderer);
     Player player(renderer, "../assets/img/character");
     Background background(renderer, "../assets/img/cities"); // Ensure this path is correct
+
+    // Tạo các đối tượng Threat
+    Threat bullet(renderer, "bullet.png", Threat::BULLET);
+    Threat meteor(renderer, "meteor.png", Threat::METEOR);
 
     bool quit = false;
     SDL_Event e;
@@ -106,6 +111,13 @@ int main(int argc, char* args[]) {
             background.render(renderer); // Render background
             player.move();
             player.render(renderer);
+
+            // Cập nhật và vẽ các đối tượng Threat
+            bullet.update();
+            bullet.render(renderer);
+
+            meteor.update();
+            meteor.render(renderer);
             break;
         case SCORE:
             // Render score screen here

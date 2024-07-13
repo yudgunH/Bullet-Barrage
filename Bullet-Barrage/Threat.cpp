@@ -1,20 +1,28 @@
-#include "Threat.h"
+﻿#include "Threat.h"
 #include <SDL_image.h>
 #include <iostream>
 
-Threat::Threat(SDL_Renderer* renderer, const std::string& path)
-    : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16), lastFrameTime(0), frameDelay(0),
-    x_pos(0), y_pos(100), velX(0.5f), lastUpdateTime(0) {  // Adjust velX for slower speed
+Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
+    : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16), lastFrameTime(0), frameDelay(100),
+    x_pos(0), y_pos(0), velX(0.5f), velY(2.0f), lastUpdateTime(0), type(type) {
 
-    SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+    if (type == METEOR) {
+        frameWidth = 15;  // Kích thước khung hình cho meteor
+        frameHeight = 31; // Kích thước khung hình cho meteor
+        y_pos = -frameHeight; // Bắt đầu meteor từ phía trên màn hình
+    }
+
+    std::string filePath = "../assets/img/threats/" + path;
+
+    SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
     if (loadedSurface == NULL) {
-        std::cerr << "Unable to load image " << path << "! SDL_image Error: " << IMG_GetError() << std::endl;
+        std::cerr << "Unable to load image " << filePath << "! SDL_image Error: " << IMG_GetError() << std::endl;
         return;
     }
 
     texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
     if (texture == NULL) {
-        std::cerr << "Unable to create texture from " << path << "! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cerr << "Unable to create texture from " << filePath << "! SDL_Error: " << SDL_GetError() << std::endl;
         SDL_FreeSurface(loadedSurface);
         return;
     }
@@ -42,13 +50,25 @@ void Threat::update() {
         lastFrameTime = currentTime;
     }
 
-    // Update position with velocity -> speed of threats
-    if (currentTime > lastUpdateTime + 16) { // Update position every 16 ms (roughly 60 FPS)
-        x_pos += velX;
-        lastUpdateTime = currentTime;
+    if (type == BULLET) {
+        if (currentTime > lastUpdateTime + 16) { // Cập nhật vị trí mỗi 16 ms (khoảng 60 FPS)
+            x_pos += velX;
+            lastUpdateTime = currentTime;
 
-        if (x_pos > 1881) { // Reset position if threat goes off screen (adjusted for new screen width)
-            x_pos = -frameWidth;
+            if (x_pos > 1881) { // Reset vị trí nếu threat đi ra khỏi màn hình (điều chỉnh cho độ rộng màn hình mới)
+                x_pos = -frameWidth;
+            }
+        }
+    }
+    else if (type == METEOR) {
+        if (currentTime > lastUpdateTime + 16) { // Cập nhật vị trí mỗi 16 ms (khoảng 60 FPS)
+            y_pos += velY;
+            lastUpdateTime = currentTime;
+
+            if (y_pos > 918) { // Reset vị trí nếu meteor đi ra khỏi màn hình (điều chỉnh cho chiều cao màn hình)
+                y_pos = -frameHeight;
+                x_pos = rand() % (1881 - frameWidth); // Randomize vị trí x khi respawning
+            }
         }
     }
 }
