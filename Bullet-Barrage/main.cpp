@@ -2,9 +2,7 @@
 #include <iostream>
 #include "Menu.h"
 #include "Setting.h"
-#include "Player.h"
-#include "Background.h"
-#include "Threat.h" // Thêm dòng này để sử dụng class Threat
+#include "PlayScreen.h"
 #include "SDL_mixer.h"
 
 enum Screen {
@@ -43,12 +41,7 @@ int main(int argc, char* args[]) {
 
     Menu menu(renderer);
     Setting setting(renderer);
-    Player player(renderer, "../assets/img/character");
-    Background background(renderer, "../assets/img/cities"); // Ensure this path is correct
-
-    // Tạo các đối tượng Threat
-    Threat bullet(renderer, "bullet.png", Threat::BULLET);
-    Threat meteor(renderer, "meteor.png", Threat::METEOR);
+    PlayScreen playScreen(renderer);
 
     bool quit = false;
     SDL_Event e;
@@ -57,7 +50,6 @@ int main(int argc, char* args[]) {
     int currentTrack = 0;
     bool goToMenu = false;
 
-    // Ensure music starts when the game starts
     setting.changeTrack(currentTrack);
 
     while (!quit) {
@@ -78,7 +70,7 @@ int main(int argc, char* args[]) {
                     }
                     break;
                 case GAME:
-                    player.handleEvent(e);
+                    playScreen.handleEvent(e);
                     if (e.type == SDL_QUIT) {
                         quit = true;
                     }
@@ -88,7 +80,6 @@ int main(int argc, char* args[]) {
                     if (e.type == SDL_QUIT) {
                         quit = true;
                     }
-                    // Add any additional score screen event handling if needed
                     break;
                 }
             }
@@ -99,29 +90,17 @@ int main(int argc, char* args[]) {
 
         switch (currentScreen) {
         case MENU:
-            background.update();
-            background.render(renderer);
             menu.render(renderer);
             break;
         case SETTING:
             setting.render(renderer);
             break;
         case GAME:
-            background.update(); // Update background animation
-            background.render(renderer); // Render background
-            player.move();
-            player.render(renderer);
-
-            // Cập nhật và vẽ các đối tượng Threat
-            bullet.update();
-            bullet.render(renderer);
-
-            meteor.update();
-            meteor.render(renderer);
+            playScreen.update();
+            playScreen.render(renderer);
             break;
         case SCORE:
             // Render score screen here
-            // Add rendering logic for the score screen
             break;
         }
 

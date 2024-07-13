@@ -139,6 +139,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayScreen.cpp" />
     <ClCompile Include="Setting.cpp" />
     <ClCompile Include="Threat.cpp" />
   </ItemGroup>
@@ -147,6 +148,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayScreen.h" />
     <ClInclude Include="Setting.h" />
     <ClInclude Include="Threat.h" />
   </ItemGroup>
