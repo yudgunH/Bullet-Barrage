@@ -76,9 +76,13 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting)
     menuButtonRect = { 1881 - 70, 20, 50, 50 }; // Adjust the size and position as needed
 
     // Initialize other buttons rects
-    homeButtonRect = { miniMenuRect.x + 50, miniMenuRect.y + miniMenuRect.h - 100, 50, 50 };
-    returnButtonRect = { miniMenuRect.x + (miniMenuRect.w / 2) - 25, miniMenuRect.y + miniMenuRect.h - 100, 50, 50 };
-    audioButtonRect = { miniMenuRect.x + miniMenuRect.w - 100, miniMenuRect.y + miniMenuRect.h - 100, 50, 50 };
+    int buttonWidth = 110;
+    int buttonHeight = 110;
+    int buttonSpacing = (miniMenuRect.w - 3 * buttonWidth) / 4;
+
+    homeButtonRect = { miniMenuRect.x + buttonSpacing, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
+    returnButtonRect = { homeButtonRect.x + buttonWidth + buttonSpacing, homeButtonRect.y, buttonWidth, buttonHeight };
+    audioButtonRect = { returnButtonRect.x + buttonWidth + buttonSpacing, returnButtonRect.y, buttonWidth, buttonHeight };
 }
 
 PlayScreen::~PlayScreen() {
