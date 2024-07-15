@@ -77,13 +77,12 @@ Setting::Setting(SDL_Renderer* renderer)
     // Initialize slider frame and slider
     sliderFrameRect = { 750, 410, 400, 45 }; // Position and size of the slider frame
     sliderRect = { 755, 415, 0, 35 }; // Initialize width to 0
-    sliderHandleRect = { 750 + 400 - 20, 410, 20, 50 }; // Position and size of the slider handle (100% volume at far right)
+    sliderHandleRect = { 750 + 400 - 20, 410, 20, 50 }; // Position and size of the slider handle
 
-    // Initialize track buttons with more distance
+    // Initialize track buttons
     prevButtonRect = { 700, 540, 40, 40 }; // Position and size of the previous button
     nextButtonRect = { 1250, 540, 40, 40 }; // Position and size of the next button
 
-    // Initialize back button at the top left corner and enlarge it
     backButtonRect = { 50, 50, 90, 90 }; // Increased size of the back button
 
     // Initialize track names and track files
