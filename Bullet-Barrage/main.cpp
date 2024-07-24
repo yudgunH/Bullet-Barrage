@@ -75,6 +75,11 @@ int main(int argc, char* args[]) {
                     if (e.type == SDL_QUIT) {
                         quit = true;
                     }
+                    if (currentScreen != GAME) {
+                        // Nếu thoát khỏi màn hình game, lưu điểm và reset điểm
+                        score.saveScores(scoreFile);
+                        playScreen.reset();
+                    }
                     break;
                 case SCORE:
                     scoreScreen.handleEvent(e, &currentScreen);

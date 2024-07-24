@@ -1,10 +1,9 @@
-#pragma once
-#ifndef BACKGROUND_H
+﻿#ifndef BACKGROUND_H
 #define BACKGROUND_H
 
 #include <SDL.h>
-#include <string>
 #include <vector>
+#include <string>
 
 class Background {
 public:
@@ -13,6 +12,7 @@ public:
 
     void update();
     void render(SDL_Renderer* renderer);
+    void reset();
 
 private:
     std::vector<SDL_Texture*> frames;

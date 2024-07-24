@@ -3,7 +3,6 @@
 
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     : posX(600), posY(540), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE), onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(540), jumpForce(200), playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false), moveRight(false), lastMoveTime(0) {
-    // Load all textures for different states and directions
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
     loadTextures(renderer, base_path + "/idle_R/Character_1-idle_", idleRightTextures, 31);
     loadTextures(renderer, base_path + "/Run_L/Character_1-Run_", runLeftTextures, 27);
@@ -11,10 +10,8 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     loadTextures(renderer, base_path + "/Jump_L/Character_1-jump_", jumpLeftTextures, 14);
     loadTextures(renderer, base_path + "/Jump_R/Character_1-jump_", jumpRightTextures, 14);
 
-    // Calculate the scaling factor for different animations
-    float scaleFactor = 0.35; // Adjust this factor as needed
+    float scaleFactor = 0.35;
 
-    // Set the new width and height based on the scaling factor
     idleWidth = static_cast<int>(195 * scaleFactor);
     idleHeight = static_cast<int>(385 * scaleFactor);
     runWidth = static_cast<int>(327 * scaleFactor);
@@ -34,7 +31,7 @@ Player::~Player() {
 
 void Player::loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount) {
     for (int i = 0; i < frameCount; ++i) {
-        std::string filePath = path + (i < 10 ? "0" : "") + std::to_string(i) + ".png"; // Handles 00-09 naming
+        std::string filePath = path + (i < 10 ? "0" : "") + std::to_string(i) + ".png";
         SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
         if (loadedSurface == NULL) {
             std::cerr << "Unable to load image " << filePath << "! SDL_image Error: " << IMG_GetError() << std::endl;
@@ -50,6 +47,10 @@ void Player::loadTextures(SDL_Renderer* renderer, const std::string& path, std::
             SDL_FreeSurface(loadedSurface);
         }
     }
+
+    if (textures.empty()) {
+        std::cerr << "No textures were loaded for path " << path << ". Check the paths and files." << std::endl;
+    }
 }
 
 void Player::handleEvent(SDL_Event& e) {
@@ -57,7 +58,7 @@ void Player::handleEvent(SDL_Event& e) {
         switch (e.key.keysym.sym) {
         case SDLK_UP:
             if (onGround) {
-                velY = -jumpForce / 20; // gradual update
+                velY = -jumpForce / 20;
                 jumpStartY = posY;
                 jumpTargetY = posY - jumpForce;
                 onGround = false;
@@ -65,7 +66,7 @@ void Player::handleEvent(SDL_Event& e) {
                 lastJumpTime = SDL_GetTicks();
             }
             else if (!onGround && canDoubleJump) {
-                velY = -jumpForce / 20; // gradual update for double jump
+                velY = -jumpForce / 20;
                 jumpStartY = posY;
                 jumpTargetY = posY - jumpForce;
                 state = JUMPING;
@@ -112,7 +113,6 @@ void Player::move() {
         lastMoveTime = currentTime;
     }
 
-    // Gradual update for jump
     if (!onGround) {
         if (currentTime > lastJumpTime + jumpDelay) {
             if (!reachedPeak) {
@@ -127,7 +127,7 @@ void Player::move() {
             }
             else {
                 if (currentTime > peakTime + peakDelay) {
-                    velY = jumpForce / 20; // Set to positive for landing
+                    velY = jumpForce / 20;
                     if (posY < groundY) {
                         posY += velY;
                     }
@@ -141,11 +141,10 @@ void Player::move() {
                     }
                 }
             }
-            lastJumpTime = currentTime; // Update the jump time for the next step
+            lastJumpTime = currentTime;
         }
     }
 
-    // Clamp the position to the screen bounds
     if (posX < 0) posX = 0;
     if (posX + runWidth > 1881) posX = 1881 - runWidth;
     if (posY < 0) posY = 0;
@@ -189,4 +188,19 @@ void Player::render(SDL_Renderer* renderer) {
         SDL_Rect renderQuad = { posX, posY, renderWidth, renderHeight };
         SDL_RenderCopy(renderer, (*currentTextures)[frame % currentTextures->size()], NULL, &renderQuad);
     }
+}
+
+void Player::reset() {
+    posX = 600;
+    posY = 540;
+    velY = 0;
+    frame = 0;
+    direction = RIGHT;
+    state = IDLE;
+    onGround = true;
+    canDoubleJump = true;
+    reachedPeak = false;
+    jumpStartY = 0;
+    jumpTargetY = 0;
+    lastFrameTime = SDL_GetTicks();
 }

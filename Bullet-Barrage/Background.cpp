@@ -41,7 +41,7 @@ Background::~Background() {
 void Background::update() {
     Uint32 currentTime = SDL_GetTicks();
     if (currentTime > lastFrameTime + frameDelay) {
-        currentFrame = (currentFrame + 1) % frameCount;
+        currentFrame = (currentFrame + 1) % frames.size();
         lastFrameTime = currentTime;
     }
 }
@@ -50,4 +50,9 @@ void Background::render(SDL_Renderer* renderer) {
     if (!frames.empty()) {
         SDL_RenderCopy(renderer, frames[currentFrame], NULL, NULL);
     }
+}
+
+void Background::reset() {
+    currentFrame = 0;
+    lastFrameTime = SDL_GetTicks();
 }

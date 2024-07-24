@@ -1,11 +1,15 @@
 ﻿#include "PlayScreen.h"
-#include "main.h"  // Bao gồm main.h để có khai báo enum Screen
+#include "main.h"
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
 
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
-    : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen), setting(setting), previousVolume(50), startTime(SDL_GetTicks()), score(score) {
+    : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),
+    returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen),
+    setting(setting), previousVolume(50), startTime(SDL_GetTicks()), pausedTime(0),
+    elapsedTime(0), isPaused(false), score(score) {
+
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
     bullet = new Threat(renderer, "bullet.png", Threat::BULLET);
@@ -111,10 +115,54 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(scoreTexture);
 }
 
+void PlayScreen::pause() {
+    if (!isPaused) {
+        isPaused = true;
+        pausedTime = SDL_GetTicks();
+    }
+}
+
+void PlayScreen::resume() {
+    if (isPaused) {
+        isPaused = false;
+        Uint32 currentTime = SDL_GetTicks();
+        startTime += (currentTime - pausedTime);  // Điều chỉnh thời gian bắt đầu để bù cho thời gian tạm dừng
+    }
+}
+
+void PlayScreen::resetScore() {
+    startTime = SDL_GetTicks();
+    elapsedTime = 0;
+    updateScoreTexture();
+}
+
+Uint32 PlayScreen::getElapsedTime() const {
+    return elapsedTime;
+}
+
+void PlayScreen::reset() {
+    startTime = SDL_GetTicks();
+    elapsedTime = 0;
+    isPaused = false;
+    miniMenuActive = false;
+    menuButtonHover = false;
+    homeButtonHover = false;
+    returnButtonHover = false;
+    audioButtonHover = false;
+    audioOn = true;
+    updateScoreTexture();
+    player->reset();
+    background->reset();
+    bullet->reset();
+    meteor->reset();
+}
+
 void PlayScreen::handleEvent(SDL_Event& e) {
     if (miniMenuActive) {
+        // Xử lý sự kiện khi mini menu hoạt động...
         if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
             miniMenuActive = false;
+            resume();  // Resume game khi thoát mini menu
         }
 
         if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
@@ -132,10 +180,14 @@ void PlayScreen::handleEvent(SDL_Event& e) {
                 if (homeButtonHover) {
                     // Chuyển sang màn hình Menu
                     *currentScreen = MENU;
+                    miniMenuActive = false;
+                    score->addScore(elapsedTime);  // Lưu điểm số hiện tại vào Score
+                    reset();  // Reset trạng thái
                 }
                 else if (returnButtonHover) {
                     // Tắt miniMenu và quay lại màn hình PlayScreen
                     miniMenuActive = false;
+                    resume();  // Resume game
                 }
                 else if (audioButtonHover) {
                     // Handle audio button click
@@ -152,6 +204,7 @@ void PlayScreen::handleEvent(SDL_Event& e) {
         }
     }
     else {
+        // Xử lý sự kiện khi PlayScreen hoạt động bình thường...
         player->handleEvent(e);
 
         if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
@@ -162,15 +215,16 @@ void PlayScreen::handleEvent(SDL_Event& e) {
 
             if (e.type == SDL_MOUSEBUTTONDOWN && menuButtonHover) {
                 miniMenuActive = true;
-                Uint32 endTime = SDL_GetTicks();
-                score->addScore((endTime - startTime) / 1000);  // Lưu điểm số hiện tại vào Score
+                pause();  // Pause game khi mở mini menu
             }
         }
     }
 }
 
 void PlayScreen::update() {
-    if (!miniMenuActive) {
+    if (!miniMenuActive && !isPaused) {
+        Uint32 currentTime = SDL_GetTicks();
+        elapsedTime = (currentTime - startTime) / 1000;  // Cập nhật thời gian đã chơi
         background->update();
         player->move();
         bullet->update();
@@ -234,7 +288,10 @@ void PlayScreen::render(SDL_Renderer* renderer) {
 
 void PlayScreen::updateScoreTexture() {
     Uint32 currentTime = SDL_GetTicks();
-    Uint32 elapsedTime = (currentTime - startTime) / 1000;  // Thời gian tính bằng giây
+    Uint32 displayTime = elapsedTime;
+    if (!isPaused) {
+        displayTime = (currentTime - startTime) / 1000;
+    }
 
     TTF_Font* font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24);
     if (font == NULL) {
@@ -243,7 +300,7 @@ void PlayScreen::updateScoreTexture() {
     }
 
     SDL_Color textColor = { 0, 0, 0, 255 };
-    std::string scoreText = "Score: " + std::to_string(elapsedTime);
+    std::string scoreText = "Score: " + std::to_string(displayTime);
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
     if (textSurface == NULL) {
         std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;

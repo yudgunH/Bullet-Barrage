@@ -17,9 +17,14 @@ public:
     void update();
     void render(SDL_Renderer* renderer);
 
-private:
-    SDL_Renderer* renderer;  // Thêm thành viên này
+    void pause();
+    void resume();
+    void resetScore();
+    Uint32 getElapsedTime() const;
+    void reset();
 
+private:
+    SDL_Renderer* renderer;
     Player* player;
     Background* background;
     Threat* bullet;
@@ -48,13 +53,17 @@ private:
     bool audioButtonHover;
     bool audioOn;
     int previousVolume;
-    Setting* setting;  // Thêm con trỏ tới Setting
+    Setting* setting;
     int* currentScreen;
 
-    Uint32 startTime;  // Thời gian bắt đầu
+    Uint32 startTime;
+    Uint32 pausedTime;
+    Uint32 elapsedTime;
+    bool isPaused;
+
     SDL_Texture* scoreTexture;
     SDL_Rect scoreRect;
-    Score* score;  // Thêm con trỏ tới Score
+    Score* score;
 
     void updateScoreTexture();
 };

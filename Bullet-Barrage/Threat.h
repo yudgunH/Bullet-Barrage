@@ -17,6 +17,7 @@ public:
 
     void update();
     void render(SDL_Renderer* renderer);
+    void reset();
 
 private:
     SDL_Texture* texture;

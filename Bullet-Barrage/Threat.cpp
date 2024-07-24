@@ -7,9 +7,9 @@ Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
     x_pos(0), y_pos(0), velX(0.5f), velY(2.0f), lastUpdateTime(0), type(type) {
 
     if (type == METEOR) {
-        frameWidth = 15;  // Kích thước khung hình cho meteor
-        frameHeight = 31; // Kích thước khung hình cho meteor
-        y_pos = -frameHeight; // Bắt đầu meteor từ phía trên màn hình
+        frameWidth = 15;
+        frameHeight = 31;
+        y_pos = -frameHeight;
     }
 
     std::string filePath = "../assets/img/threats/" + path;
@@ -37,6 +37,10 @@ Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
         frame.h = frameHeight;
         frames.push_back(frame);
     }
+
+    if (frames.empty()) {
+        std::cerr << "No frames were loaded for path " << path << ". Check the paths and files." << std::endl;
+    }
 }
 
 Threat::~Threat() {
@@ -51,29 +55,38 @@ void Threat::update() {
     }
 
     if (type == BULLET) {
-        if (currentTime > lastUpdateTime + 16) { // Cập nhật vị trí mỗi 16 ms (khoảng 60 FPS)
+        if (currentTime > lastUpdateTime + 16) {
             x_pos += velX;
             lastUpdateTime = currentTime;
 
-            if (x_pos > 1881) { // Reset vị trí nếu threat đi ra khỏi màn hình (điều chỉnh cho độ rộng màn hình mới)
+            if (x_pos > 1881) {
                 x_pos = -frameWidth;
             }
         }
     }
     else if (type == METEOR) {
-        if (currentTime > lastUpdateTime + 16) { // Cập nhật vị trí mỗi 16 ms (khoảng 60 FPS)
+        if (currentTime > lastUpdateTime + 16) {
             y_pos += velY;
             lastUpdateTime = currentTime;
 
-            if (y_pos > 918) { // Reset vị trí nếu meteor đi ra khỏi màn hình (điều chỉnh cho chiều cao màn hình)
+            if (y_pos > 918) {
                 y_pos = -frameHeight;
-                x_pos = rand() % (1881 - frameWidth); // Randomize vị trí x khi respawning
+                x_pos = rand() % (1881 - frameWidth);
             }
         }
     }
 }
 
 void Threat::render(SDL_Renderer* renderer) {
-    SDL_Rect destRect = { static_cast<int>(x_pos), static_cast<int>(y_pos), frameWidth, frameHeight };
-    SDL_RenderCopy(renderer, texture, &frames[currentFrame], &destRect);
+    if (!frames.empty()) {
+        SDL_Rect destRect = { static_cast<int>(x_pos), static_cast<int>(y_pos), frameWidth, frameHeight };
+        SDL_RenderCopy(renderer, texture, &frames[currentFrame], &destRect);
+    }
+}
+
+void Threat::reset() {
+    x_pos = 0;
+    y_pos = 0;
+    currentFrame = 0;
+    lastFrameTime = SDL_GetTicks();
 }
