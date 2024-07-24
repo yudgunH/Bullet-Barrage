@@ -7,8 +7,8 @@
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
     : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),
     returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen),
-    setting(setting), previousVolume(50), startTime(SDL_GetTicks()), pausedTime(0),
-    elapsedTime(0), isPaused(false), score(score) {
+    setting(setting), previousVolume(50), pausedTime(0),
+    elapsedTime(0), isPaused(false), isRunning(false), score(score) {
 
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
@@ -144,6 +144,7 @@ void PlayScreen::reset() {
     startTime = SDL_GetTicks();
     elapsedTime = 0;
     isPaused = false;
+    isRunning = false;
     miniMenuActive = false;
     menuButtonHover = false;
     homeButtonHover = false;
@@ -219,10 +220,16 @@ void PlayScreen::handleEvent(SDL_Event& e) {
             }
         }
     }
+
+    if (!isRunning && *currentScreen == GAME) {
+        // Khởi động lại thời gian bắt đầu khi PlayScreen được bật
+        startTime = SDL_GetTicks();
+        isRunning = true;
+    }
 }
 
 void PlayScreen::update() {
-    if (!miniMenuActive && !isPaused) {
+    if (!miniMenuActive && !isPaused && isRunning) {
         Uint32 currentTime = SDL_GetTicks();
         elapsedTime = (currentTime - startTime) / 1000;  // Cập nhật thời gian đã chơi
         background->update();
@@ -289,7 +296,7 @@ void PlayScreen::render(SDL_Renderer* renderer) {
 void PlayScreen::updateScoreTexture() {
     Uint32 currentTime = SDL_GetTicks();
     Uint32 displayTime = elapsedTime;
-    if (!isPaused) {
+    if (!isPaused && isRunning) {
         displayTime = (currentTime - startTime) / 1000;
     }
 
