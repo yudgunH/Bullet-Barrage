@@ -29,6 +29,12 @@ private:
     Background* background;
     Threat* bullet;
     Threat* meteor;
+    Threat* kunai;
+    Threat* planet;
+    Threat* poison;
+    Threat* rocket;
+    Threat* typhoon;
+    Threat* boom;
 
     SDL_Texture* menuButtonTexture;
     SDL_Texture* menuButtonHoverTexture;

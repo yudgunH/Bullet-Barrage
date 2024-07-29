@@ -9,7 +9,13 @@ class Threat {
 public:
     enum class ThreatType {
         BULLET,
-        METEOR
+        METEOR,
+        KUNAI,
+        PLANET,
+        POISON,
+        ROCKET,
+        TYPHOON,
+        BOOM
     };
 
     Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type);

@@ -14,6 +14,12 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Sc
     background = new Background(renderer, "../assets/img/cities");
     bullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
     meteor = new Threat(renderer, "meteor.png", Threat::ThreatType::METEOR);
+    kunai = new Threat(renderer, "kunai.png", Threat::ThreatType::KUNAI);
+    planet = new Threat(renderer, "planet.png", Threat::ThreatType::PLANET);
+    poison = new Threat(renderer, "poison.png", Threat::ThreatType::POISON);
+    rocket = new Threat(renderer, "rocket.png", Threat::ThreatType::ROCKET);
+    typhoon = new Threat(renderer, "typhoon.png", Threat::ThreatType::TYPHOON);
+    boom = new Threat(renderer, "boom.png", Threat::ThreatType::BOOM);
 
     loadTextures();
     initRects();
@@ -23,8 +29,14 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Sc
 PlayScreen::~PlayScreen() {
     delete player;
     delete background;
-    delete bullet;
+    //delete bullet;
     delete meteor;
+    delete kunai;
+    delete planet;
+    delete poison;
+    delete rocket;
+    delete typhoon;
+    delete boom;
 
     SDL_DestroyTexture(menuButtonTexture);
     SDL_DestroyTexture(menuButtonHoverTexture);
@@ -128,6 +140,12 @@ void PlayScreen::reset() {
     background->reset();
     bullet->reset();
     meteor->reset();
+    kunai->reset();
+    planet->reset();
+    poison->reset();
+    rocket->reset();
+    typhoon->reset();
+    boom->reset();
 }
 
 void PlayScreen::handleEvent(SDL_Event& e) {
@@ -200,8 +218,15 @@ void PlayScreen::update() {
         elapsedTime = (currentTime - startTime) / 1000;
         background->update();
         player->move();
+        
         bullet->update();
         meteor->update();
+        kunai->update();
+        planet->update();
+        poison->update();
+        rocket->update();
+        typhoon->update();
+        boom->update();
     }
 
     updateScoreTexture();
@@ -210,8 +235,15 @@ void PlayScreen::update() {
 void PlayScreen::render(SDL_Renderer* renderer) {
     background->render(renderer);
     player->render(renderer);
+    
     bullet->render(renderer);
     meteor->render(renderer);
+    kunai->render(renderer);
+    planet->render(renderer);
+    poison->render(renderer);
+    rocket->render(renderer);
+    typhoon->render(renderer);
+    boom->render(renderer);
 
     SDL_RenderCopy(renderer, menuButtonHover ? menuButtonHoverTexture : menuButtonTexture, nullptr, &menuButtonRect);
     SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreRect);

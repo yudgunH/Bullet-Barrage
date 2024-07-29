@@ -12,6 +12,27 @@ Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
         frameHeight = 31;
         y_pos = -frameHeight;
     }
+    else if (type == ThreatType::KUNAI || type == ThreatType::PLANET || type == ThreatType::POISON) {
+        frameWidth = 15;
+        frameHeight = 16;
+    }
+    else if (type == ThreatType::ROCKET) {
+        frameWidth = 15;
+        frameHeight = 40;
+        frameCount = 5;
+        y_pos = -frameHeight;
+    }
+    else if (type == ThreatType::TYPHOON) {
+        frameWidth = 16;
+        frameHeight = 24;
+        frameCount = 2;
+    }
+    else if (type == ThreatType::BOOM) {
+        frameWidth = 18;
+        frameHeight = 15;
+        frameCount = 6;
+        y_pos = -frameHeight;
+    }
 
     loadTexture(renderer, path);
     setupFrames();
@@ -41,6 +62,9 @@ void Threat::loadTexture(SDL_Renderer* renderer, const std::string& path) {
 void Threat::setupFrames() {
     for (int i = 0; i < frameCount; ++i) {
         SDL_Rect frame = { i * frameWidth, 0, frameWidth, frameHeight };
+        if (type == ThreatType::BOOM) {
+            frame = { 0, i * frameHeight, frameWidth, frameHeight }; // frames vertical for BOOM
+        }
         frames.push_back(frame);
     }
 
@@ -57,11 +81,11 @@ void Threat::update() {
     }
 
     if (currentTime > lastUpdateTime + 16) {
-        if (type == ThreatType::BULLET) {
+        if (type == ThreatType::BULLET || type == ThreatType::KUNAI || type == ThreatType::PLANET || type == ThreatType::POISON || type == ThreatType::TYPHOON) {
             x_pos += velX;
             if (x_pos > 1881) x_pos = -frameWidth;
         }
-        else if (type == ThreatType::METEOR) {
+        else if (type == ThreatType::METEOR || type == ThreatType::ROCKET || type == ThreatType::BOOM) {
             y_pos += velY;
             if (y_pos > 918) {
                 y_pos = -frameHeight;
