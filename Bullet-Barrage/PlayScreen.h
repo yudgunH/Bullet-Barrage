@@ -60,13 +60,15 @@ private:
     Uint32 pausedTime;
     Uint32 elapsedTime;
     bool isPaused;
-    bool isRunning; // Cờ để kiểm tra xem PlayScreen có đang chạy hay không
+    bool isRunning;
 
     SDL_Texture* scoreTexture;
     SDL_Rect scoreRect;
     Score* score;
 
     void updateScoreTexture();
+    void loadTextures();
+    void initRects();
 };
 
 #endif // PLAYSCREEN_H

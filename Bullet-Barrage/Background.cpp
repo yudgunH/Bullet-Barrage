@@ -3,18 +3,18 @@
 #include <iostream>
 
 Background::Background(SDL_Renderer* renderer, const std::string& path)
-    : currentFrame(0), frameCount(81), lastFrameTime(0), frameDelay(100) {
+    : currentFrame(0), lastFrameTime(0), frameDelay(100) {
 
-    for (int i = 1; i <= frameCount; ++i) {
+    for (int i = 1; i <= 81; ++i) {
         std::string filePath = path + "/cities (" + std::to_string(i) + ").png";
         SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
-        if (loadedSurface == NULL) {
+        if (!loadedSurface) {
             std::cerr << "Unable to load image " << filePath << "! SDL_image Error: " << IMG_GetError() << std::endl;
             continue;
         }
 
         SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-        if (texture == NULL) {
+        if (!texture) {
             std::cerr << "Unable to create texture from " << filePath << "! SDL_Error: " << SDL_GetError() << std::endl;
         }
         else {
@@ -28,7 +28,6 @@ Background::Background(SDL_Renderer* renderer, const std::string& path)
         std::cerr << "No frames loaded for background animation!" << std::endl;
     }
 
-    // Initialize lastFrameTime to the current time to start animation immediately
     lastFrameTime = SDL_GetTicks();
 }
 

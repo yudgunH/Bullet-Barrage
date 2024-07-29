@@ -3,48 +3,50 @@
 #include <iostream>
 
 Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
-    : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16), lastFrameTime(0), frameDelay(100),
-    x_pos(0), y_pos(0), velX(0.5f), velY(2.0f), lastUpdateTime(0), type(type) {
+    : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16),
+    lastFrameTime(0), frameDelay(100), x_pos(0), y_pos(0), velX(0.5f), velY(2.0f),
+    lastUpdateTime(0), type(type) {
 
-    if (type == METEOR) {
+    if (type == ThreatType::METEOR) {
         frameWidth = 15;
         frameHeight = 31;
         y_pos = -frameHeight;
     }
 
-    std::string filePath = "../assets/img/threats/" + path;
+    loadTexture(renderer, path);
+    setupFrames();
+}
 
+Threat::~Threat() {
+    SDL_DestroyTexture(texture);
+}
+
+void Threat::loadTexture(SDL_Renderer* renderer, const std::string& path) {
+    std::string filePath = "../assets/img/threats/" + path;
     SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
-    if (loadedSurface == NULL) {
+
+    if (!loadedSurface) {
         std::cerr << "Unable to load image " << filePath << "! SDL_image Error: " << IMG_GetError() << std::endl;
         return;
     }
 
     texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-    if (texture == NULL) {
-        std::cerr << "Unable to create texture from " << filePath << "! SDL_Error: " << SDL_GetError() << std::endl;
-        SDL_FreeSurface(loadedSurface);
-        return;
-    }
-
     SDL_FreeSurface(loadedSurface);
 
+    if (!texture) {
+        std::cerr << "Unable to create texture from " << filePath << "! SDL_Error: " << SDL_GetError() << std::endl;
+    }
+}
+
+void Threat::setupFrames() {
     for (int i = 0; i < frameCount; ++i) {
-        SDL_Rect frame;
-        frame.x = i * frameWidth;
-        frame.y = 0;
-        frame.w = frameWidth;
-        frame.h = frameHeight;
+        SDL_Rect frame = { i * frameWidth, 0, frameWidth, frameHeight };
         frames.push_back(frame);
     }
 
     if (frames.empty()) {
-        std::cerr << "No frames were loaded for path " << path << ". Check the paths and files." << std::endl;
+        std::cerr << "No frames were loaded. Check the paths and files." << std::endl;
     }
-}
-
-Threat::~Threat() {
-    SDL_DestroyTexture(texture);
 }
 
 void Threat::update() {
@@ -54,26 +56,19 @@ void Threat::update() {
         lastFrameTime = currentTime;
     }
 
-    if (type == BULLET) {
-        if (currentTime > lastUpdateTime + 16) {
+    if (currentTime > lastUpdateTime + 16) {
+        if (type == ThreatType::BULLET) {
             x_pos += velX;
-            lastUpdateTime = currentTime;
-
-            if (x_pos > 1881) {
-                x_pos = -frameWidth;
-            }
+            if (x_pos > 1881) x_pos = -frameWidth;
         }
-    }
-    else if (type == METEOR) {
-        if (currentTime > lastUpdateTime + 16) {
+        else if (type == ThreatType::METEOR) {
             y_pos += velY;
-            lastUpdateTime = currentTime;
-
             if (y_pos > 918) {
                 y_pos = -frameHeight;
                 x_pos = rand() % (1881 - frameWidth);
             }
         }
+        lastUpdateTime = currentTime;
     }
 }
 

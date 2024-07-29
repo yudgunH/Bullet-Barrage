@@ -25,6 +25,7 @@ private:
     bool backButtonHover;
 
     void updateScoreTexture(SDL_Renderer* renderer);
+    void loadTextures(SDL_Renderer* renderer);
 };
 
 #endif // SCORESCREEN_H

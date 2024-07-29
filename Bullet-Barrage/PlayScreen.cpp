@@ -7,91 +7,16 @@
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
     : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),
     returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen),
-    setting(setting), previousVolume(50), pausedTime(0),
-    elapsedTime(0), isPaused(false), isRunning(false), score(score) {
+    setting(setting), previousVolume(50), pausedTime(0), elapsedTime(0),
+    isPaused(false), isRunning(false), score(score) {
 
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
-    bullet = new Threat(renderer, "bullet.png", Threat::BULLET);
-    meteor = new Threat(renderer, "meteor.png", Threat::METEOR);
+    bullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
+    meteor = new Threat(renderer, "meteor.png", Threat::ThreatType::METEOR);
 
-    // Load menu button textures
-    SDL_Surface* menuButtonSurface = IMG_Load("../assets/img/UI/Icon_Large_Menu_Grey.png");
-    menuButtonTexture = SDL_CreateTextureFromSurface(renderer, menuButtonSurface);
-    SDL_FreeSurface(menuButtonSurface);
-
-    SDL_Surface* menuButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Large_Menu_Blank.png");
-    menuButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, menuButtonHoverSurface);
-    SDL_FreeSurface(menuButtonHoverSurface);
-
-    SDL_Surface* miniMenuSurface = IMG_Load("../assets/img/UI/miniMenu.png");
-    miniMenuTexture = SDL_CreateTextureFromSurface(renderer, miniMenuSurface);
-
-    // Load other button textures
-    SDL_Surface* homeButtonSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_Home.png");
-    homeButtonTexture = SDL_CreateTextureFromSurface(renderer, homeButtonSurface);
-    SDL_FreeSurface(homeButtonSurface);
-
-    SDL_Surface* homeButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_Home.png");
-    homeButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, homeButtonHoverSurface);
-    SDL_FreeSurface(homeButtonHoverSurface);
-
-    SDL_Surface* returnButtonSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_Return.png");
-    returnButtonTexture = SDL_CreateTextureFromSurface(renderer, returnButtonSurface);
-    SDL_FreeSurface(returnButtonSurface);
-
-    SDL_Surface* returnButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_Return.png");
-    returnButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, returnButtonHoverSurface);
-    SDL_FreeSurface(returnButtonHoverSurface);
-
-    SDL_Surface* audioButtonSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_Audio.png");
-    audioButtonTexture = SDL_CreateTextureFromSurface(renderer, audioButtonSurface);
-    SDL_FreeSurface(audioButtonSurface);
-
-    SDL_Surface* audioButtonHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_Audio.png");
-    audioButtonHoverTexture = SDL_CreateTextureFromSurface(renderer, audioButtonHoverSurface);
-    SDL_FreeSurface(audioButtonHoverSurface);
-
-    SDL_Surface* audioButtonOffSurface = IMG_Load("../assets/img/UI/Icon_Small_WhiteOutline_AudioOff.png");
-    audioButtonOffTexture = SDL_CreateTextureFromSurface(renderer, audioButtonOffSurface);
-    SDL_FreeSurface(audioButtonOffSurface);
-
-    SDL_Surface* audioButtonOffHoverSurface = IMG_Load("../assets/img/UI/Icon_Small_Blank_AudioOff.png");
-    audioButtonOffHoverTexture = SDL_CreateTextureFromSurface(renderer, audioButtonOffHoverSurface);
-    SDL_FreeSurface(audioButtonOffHoverSurface);
-
-    // Calculate miniMenu size while keeping the aspect ratio
-    int originalWidth = miniMenuSurface->w;
-    int originalHeight = miniMenuSurface->h;
-    float aspectRatio = (float)originalWidth / originalHeight;
-
-    int newWidth = 0.8 * 1881; // 80% of screen width
-    int newHeight = newWidth / aspectRatio;
-
-    if (newHeight > 0.8 * 918) {
-        newHeight = 0.8 * 918; // 80% of screen height
-        newWidth = newHeight * aspectRatio;
-    }
-
-    miniMenuRect = { (1881 - newWidth) / 2, (918 - newHeight) / 2, newWidth, newHeight };
-
-    SDL_FreeSurface(miniMenuSurface);
-
-    // Initialize menu button rect (top-right corner)
-    menuButtonRect = { 1881 - 70, 20, 50, 50 }; // Adjust the size and position as needed
-
-    // Initialize other buttons rects
-    int buttonWidth = 110;
-    int buttonHeight = 110;
-    int buttonSpacing = (miniMenuRect.w - 3 * buttonWidth) / 4;
-
-    homeButtonRect = { miniMenuRect.x + buttonSpacing, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
-    returnButtonRect = { homeButtonRect.x + buttonWidth + buttonSpacing, homeButtonRect.y, buttonWidth, buttonHeight };
-    audioButtonRect = { returnButtonRect.x + buttonWidth + buttonSpacing, returnButtonRect.y, buttonWidth, buttonHeight };
-
-    // Initialize score texture
-    TTF_Init();
-    scoreRect = { menuButtonRect.x - 100, menuButtonRect.y, 90, 50 };
+    loadTextures();
+    initRects();
     updateScoreTexture();
 }
 
@@ -115,6 +40,53 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(scoreTexture);
 }
 
+void PlayScreen::loadTextures() {
+    menuButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Large_Menu_Grey.png");
+    menuButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Large_Menu_Blank.png");
+    miniMenuTexture = IMG_LoadTexture(renderer, "../assets/img/UI/miniMenu.png");
+    homeButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Home.png");
+    homeButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Home.png");
+    returnButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Return.png");
+    returnButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Return.png");
+    audioButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Audio.png");
+    audioButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Audio.png");
+    audioButtonOffTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_AudioOff.png");
+    audioButtonOffHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_AudioOff.png");
+}
+
+void PlayScreen::initRects() {
+    SDL_Surface* miniMenuSurface = IMG_Load("../assets/img/UI/miniMenu.png");
+
+    int originalWidth = miniMenuSurface->w;
+    int originalHeight = miniMenuSurface->h;
+    float aspectRatio = static_cast<float>(originalWidth) / originalHeight;
+
+    int newWidth = 0.8 * 1881;
+    int newHeight = newWidth / aspectRatio;
+
+    if (newHeight > 0.8 * 918) {
+        newHeight = 0.8 * 918;
+        newWidth = newHeight * aspectRatio;
+    }
+
+    miniMenuRect = { (1881 - newWidth) / 2, (918 - newHeight) / 2, newWidth, newHeight };
+
+    SDL_FreeSurface(miniMenuSurface);
+
+    menuButtonRect = { 1881 - 70, 20, 50, 50 };
+
+    int buttonWidth = 110;
+    int buttonHeight = 110;
+    int buttonSpacing = (miniMenuRect.w - 3 * buttonWidth) / 4;
+
+    homeButtonRect = { miniMenuRect.x + buttonSpacing, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
+    returnButtonRect = { homeButtonRect.x + buttonWidth + buttonSpacing, homeButtonRect.y, buttonWidth, buttonHeight };
+    audioButtonRect = { returnButtonRect.x + buttonWidth + buttonSpacing, returnButtonRect.y, buttonWidth, buttonHeight };
+
+    TTF_Init();
+    scoreRect = { menuButtonRect.x - 100, menuButtonRect.y, 90, 50 };
+}
+
 void PlayScreen::pause() {
     if (!isPaused) {
         isPaused = true;
@@ -126,7 +98,7 @@ void PlayScreen::resume() {
     if (isPaused) {
         isPaused = false;
         Uint32 currentTime = SDL_GetTicks();
-        startTime += (currentTime - pausedTime);  // Điều chỉnh thời gian bắt đầu để bù cho thời gian tạm dừng
+        startTime += (currentTime - pausedTime);
     }
 }
 
@@ -160,10 +132,9 @@ void PlayScreen::reset() {
 
 void PlayScreen::handleEvent(SDL_Event& e) {
     if (miniMenuActive) {
-        // Xử lý sự kiện khi mini menu hoạt động...
         if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
             miniMenuActive = false;
-            resume();  // Resume game khi thoát mini menu
+            resume();
         }
 
         if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
@@ -179,19 +150,16 @@ void PlayScreen::handleEvent(SDL_Event& e) {
 
             if (e.type == SDL_MOUSEBUTTONDOWN) {
                 if (homeButtonHover) {
-                    // Chuyển sang màn hình Menu
                     *currentScreen = MENU;
                     miniMenuActive = false;
-                    score->addScore(elapsedTime);  // Lưu điểm số hiện tại vào Score
-                    reset();  // Reset trạng thái
+                    score->addScore(elapsedTime);
+                    reset();
                 }
                 else if (returnButtonHover) {
-                    // Tắt miniMenu và quay lại màn hình PlayScreen
                     miniMenuActive = false;
-                    resume();  // Resume game
+                    resume();
                 }
                 else if (audioButtonHover) {
-                    // Handle audio button click
                     if (audioOn) {
                         previousVolume = setting->getVolume();
                         setting->setVolume(0);
@@ -205,7 +173,6 @@ void PlayScreen::handleEvent(SDL_Event& e) {
         }
     }
     else {
-        // Xử lý sự kiện khi PlayScreen hoạt động bình thường...
         player->handleEvent(e);
 
         if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
@@ -216,13 +183,12 @@ void PlayScreen::handleEvent(SDL_Event& e) {
 
             if (e.type == SDL_MOUSEBUTTONDOWN && menuButtonHover) {
                 miniMenuActive = true;
-                pause();  // Pause game khi mở mini menu
+                pause();
             }
         }
     }
 
     if (!isRunning && *currentScreen == GAME) {
-        // Khởi động lại thời gian bắt đầu khi PlayScreen được bật
         startTime = SDL_GetTicks();
         isRunning = true;
     }
@@ -231,14 +197,13 @@ void PlayScreen::handleEvent(SDL_Event& e) {
 void PlayScreen::update() {
     if (!miniMenuActive && !isPaused && isRunning) {
         Uint32 currentTime = SDL_GetTicks();
-        elapsedTime = (currentTime - startTime) / 1000;  // Cập nhật thời gian đã chơi
+        elapsedTime = (currentTime - startTime) / 1000;
         background->update();
         player->move();
         bullet->update();
         meteor->update();
     }
 
-    // Cập nhật texture của điểm số
     updateScoreTexture();
 }
 
@@ -248,48 +213,15 @@ void PlayScreen::render(SDL_Renderer* renderer) {
     bullet->render(renderer);
     meteor->render(renderer);
 
-    if (menuButtonHover) {
-        SDL_RenderCopy(renderer, menuButtonHoverTexture, NULL, &menuButtonRect);
-    }
-    else {
-        SDL_RenderCopy(renderer, menuButtonTexture, NULL, &menuButtonRect);
-    }
-
-    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);  // Hiển thị điểm số
+    SDL_RenderCopy(renderer, menuButtonHover ? menuButtonHoverTexture : menuButtonTexture, nullptr, &menuButtonRect);
+    SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreRect);
 
     if (miniMenuActive) {
-        SDL_RenderCopy(renderer, miniMenuTexture, NULL, &miniMenuRect);
+        SDL_RenderCopy(renderer, miniMenuTexture, nullptr, &miniMenuRect);
 
-        if (homeButtonHover) {
-            SDL_RenderCopy(renderer, homeButtonHoverTexture, NULL, &homeButtonRect);
-        }
-        else {
-            SDL_RenderCopy(renderer, homeButtonTexture, NULL, &homeButtonRect);
-        }
-
-        if (returnButtonHover) {
-            SDL_RenderCopy(renderer, returnButtonHoverTexture, NULL, &returnButtonRect);
-        }
-        else {
-            SDL_RenderCopy(renderer, returnButtonTexture, NULL, &returnButtonRect);
-        }
-
-        if (audioButtonHover) {
-            if (audioOn) {
-                SDL_RenderCopy(renderer, audioButtonHoverTexture, NULL, &audioButtonRect);
-            }
-            else {
-                SDL_RenderCopy(renderer, audioButtonOffHoverTexture, NULL, &audioButtonRect);
-            }
-        }
-        else {
-            if (audioOn) {
-                SDL_RenderCopy(renderer, audioButtonTexture, NULL, &audioButtonRect);
-            }
-            else {
-                SDL_RenderCopy(renderer, audioButtonOffTexture, NULL, &audioButtonRect);
-            }
-        }
+        SDL_RenderCopy(renderer, homeButtonHover ? homeButtonHoverTexture : homeButtonTexture, nullptr, &homeButtonRect);
+        SDL_RenderCopy(renderer, returnButtonHover ? returnButtonHoverTexture : returnButtonTexture, nullptr, &returnButtonRect);
+        SDL_RenderCopy(renderer, audioButtonHover ? (audioOn ? audioButtonHoverTexture : audioButtonOffHoverTexture) : (audioOn ? audioButtonTexture : audioButtonOffTexture), nullptr, &audioButtonRect);
     }
 }
 
@@ -301,7 +233,7 @@ void PlayScreen::updateScoreTexture() {
     }
 
     TTF_Font* font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24);
-    if (font == NULL) {
+    if (!font) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         return;
     }
@@ -309,17 +241,17 @@ void PlayScreen::updateScoreTexture() {
     SDL_Color textColor = { 0, 0, 0, 255 };
     std::string scoreText = "Score: " + std::to_string(displayTime);
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
-    if (textSurface == NULL) {
+    if (!textSurface) {
         std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
         TTF_CloseFont(font);
         return;
     }
 
     scoreTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    if (scoreTexture == NULL) {
-        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
-    }
-
     SDL_FreeSurface(textSurface);
     TTF_CloseFont(font);
+
+    if (!scoreTexture) {
+        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+    }
 }

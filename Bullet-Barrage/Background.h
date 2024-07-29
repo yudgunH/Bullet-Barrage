@@ -17,7 +17,6 @@ public:
 private:
     std::vector<SDL_Texture*> frames;
     int currentFrame;
-    int frameCount;
     Uint32 lastFrameTime;
     Uint32 frameDelay;
 };

@@ -2,6 +2,7 @@
 #include <iostream>
 
 Score::Score() {
+    // Constructor body can be empty as no initialization is required.
 }
 
 void Score::addScore(int newScore) {
@@ -25,7 +26,6 @@ void Score::saveScores(const std::string& filename) const {
     for (int score : topScores) {
         outFile << score << std::endl;
     }
-    outFile.close();
 }
 
 void Score::loadScores(const std::string& filename) {
@@ -39,7 +39,6 @@ void Score::loadScores(const std::string& filename) {
     while (inFile >> score) {
         topScores.push_back(score);
     }
-    inFile.close();
     std::sort(topScores.begin(), topScores.end(), std::greater<int>());
     if (topScores.size() > maxScores) {
         topScores.resize(maxScores);

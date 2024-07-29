@@ -1,8 +1,10 @@
-﻿  PlayScreen.cpp
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(68,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(69,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(72,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(73,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+﻿  Menu.cpp
+  PlayScreen.cpp
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(64,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(65,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(68,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(69,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  ScoreScreen.cpp
   main.cpp
   Generating Code...
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe

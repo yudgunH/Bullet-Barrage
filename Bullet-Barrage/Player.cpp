@@ -2,7 +2,10 @@
 #include <iostream>
 
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
-    : posX(600), posY(540), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE), onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(540), jumpForce(200), playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false), moveRight(false), lastMoveTime(0) {
+    : posX(600), posY(540), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
+    onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(540), jumpForce(200),
+    playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false),
+    moveRight(false), lastMoveTime(0) {
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
     loadTextures(renderer, base_path + "/idle_R/Character_1-idle_", idleRightTextures, 31);
     loadTextures(renderer, base_path + "/Run_L/Character_1-Run_", runLeftTextures, 27);
@@ -10,7 +13,7 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     loadTextures(renderer, base_path + "/Jump_L/Character_1-jump_", jumpLeftTextures, 14);
     loadTextures(renderer, base_path + "/Jump_R/Character_1-jump_", jumpRightTextures, 14);
 
-    float scaleFactor = 0.35;
+    float scaleFactor = 0.35f; // Add 'f' suffix to specify float
 
     idleWidth = static_cast<int>(195 * scaleFactor);
     idleHeight = static_cast<int>(385 * scaleFactor);
@@ -33,12 +36,12 @@ void Player::loadTextures(SDL_Renderer* renderer, const std::string& path, std::
     for (int i = 0; i < frameCount; ++i) {
         std::string filePath = path + (i < 10 ? "0" : "") + std::to_string(i) + ".png";
         SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());
-        if (loadedSurface == NULL) {
+        if (!loadedSurface) {
             std::cerr << "Unable to load image " << filePath << "! SDL_image Error: " << IMG_GetError() << std::endl;
         }
         else {
             SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
-            if (texture == NULL) {
+            if (!texture) {
                 std::cerr << "Unable to create texture from " << filePath << "! SDL_Error: " << SDL_GetError() << std::endl;
             }
             else {

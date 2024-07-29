@@ -1,5 +1,5 @@
 ﻿#include "Menu.h"
-#include "main.h" // Thêm dòng này để sử dụng các giá trị khai báo trong main.h
+#include "main.h"
 #include <iostream>
 #include <SDL_image.h>
 
@@ -9,8 +9,8 @@ Menu::Menu(SDL_Renderer* renderer) {
         exit(1);
     }
 
-    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24); // Font file path
-    if (font == NULL) {
+    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24);
+    if (!font) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         exit(1);
     }
@@ -18,24 +18,23 @@ Menu::Menu(SDL_Renderer* renderer) {
     textColor = { 255, 255, 255 };
     hoverColor = { 0, 0, 0, 255 };
 
-    // Initialize background
     background = new Background(renderer, "../assets/img/cities");
 
-    // Create buttons
     std::vector<std::string> labels = { "Play", "Score", "Setting", "Exit" };
-    int startY = 300; // Adjust this value to lower the start position of the buttons
-    int yIncrement = 120; // Adjust this value to control the space between the buttons
-    for (int i = 0; i < labels.size(); ++i) {
+    int startY = 300;
+    int yIncrement = 120;
+    for (const auto& label : labels) {
         Button button;
-        button.rect = { 800, startY + i * yIncrement, 320, 80 }; // Adjusted y-coordinate
-        button.texture = createTextTexture(renderer, labels[i], textColor);
-        if (button.texture == NULL) {
-            std::cerr << "Failed to create button texture for " << labels[i] << std::endl;
+        button.rect = { 800, startY, 320, 80 };
+        button.texture = createTextTexture(renderer, label, textColor);
+        if (!button.texture) {
+            std::cerr << "Failed to create button texture for " << label << std::endl;
             exit(1);
         }
-        button.label = labels[i];
+        button.label = label;
         button.hover = false;
         buttons.push_back(button);
+        startY += yIncrement;
     }
 }
 
@@ -45,7 +44,7 @@ Menu::~Menu() {
     }
     TTF_CloseFont(font);
     TTF_Quit();
-    delete background; // Properly delete background
+    delete background;
 }
 
 void Menu::handleEvent(SDL_Event& e, bool& quit, int& currentScreen) {
@@ -55,35 +54,35 @@ void Menu::handleEvent(SDL_Event& e, bool& quit, int& currentScreen) {
     else if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
         int x, y;
         SDL_GetMouseState(&x, &y);
-        for (int i = 0; i < buttons.size(); ++i) {
-            if (x > buttons[i].rect.x && x < buttons[i].rect.x + buttons[i].rect.w &&
-                y > buttons[i].rect.y && y < buttons[i].rect.y + buttons[i].rect.h) {
-                buttons[i].hover = true;
+        for (auto& button : buttons) {
+            if (x > button.rect.x && x < button.rect.x + button.rect.w &&
+                y > button.rect.y && y < button.rect.y + button.rect.h) {
+                button.hover = true;
                 if (e.type == SDL_MOUSEBUTTONDOWN) {
-                    if (buttons[i].label == "Play") {
+                    if (button.label == "Play") {
                         currentScreen = GAME;
                     }
-                    else if (buttons[i].label == "Score") {
+                    else if (button.label == "Score") {
                         currentScreen = SCORE;
                     }
-                    else if (buttons[i].label == "Setting") {
+                    else if (button.label == "Setting") {
                         currentScreen = SETTING;
                     }
-                    else if (buttons[i].label == "Exit") {
+                    else if (button.label == "Exit") {
                         quit = true;
                     }
                 }
             }
             else {
-                buttons[i].hover = false;
+                button.hover = false;
             }
         }
     }
 }
 
 void Menu::render(SDL_Renderer* renderer) {
-    background->update(); // Update background animation
-    background->render(renderer); // Render background
+    background->update();
+    background->render(renderer);
 
     for (const auto& button : buttons) {
         if (button.hover) {
@@ -100,17 +99,17 @@ void Menu::render(SDL_Renderer* renderer) {
 SDL_Texture* Menu::createTextTexture(SDL_Renderer* renderer, const std::string& text, SDL_Color color) {
     if (!font) {
         std::cerr << "Font not loaded correctly!" << std::endl;
-        return NULL;
+        return nullptr;
     }
 
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
-    if (textSurface == NULL) {
+    if (!textSurface) {
         std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
-        return NULL;
+        return nullptr;
     }
 
     SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    if (textTexture == NULL) {
+    if (!textTexture) {
         std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
     }
 

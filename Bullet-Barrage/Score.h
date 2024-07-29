@@ -16,7 +16,7 @@ public:
 
 private:
     std::vector<int> topScores;
-    const int maxScores = 10;
+    static constexpr int maxScores = 10;
 };
 
 #endif // SCORE_H

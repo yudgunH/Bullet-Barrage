@@ -34,7 +34,6 @@ private:
     bool reachedPeak;
     int jumpStartY;
     int jumpTargetY;
-
     int groundY;
     int jumpForce;
     int playerStep;
@@ -47,7 +46,6 @@ private:
     bool moveLeft;
     bool moveRight;
     Uint32 lastMoveTime;
-
     int idleWidth, idleHeight;
     int runWidth, runHeight;
     int jumpWidth, jumpHeight;

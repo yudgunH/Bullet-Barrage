@@ -11,6 +11,7 @@ class Menu {
 public:
     Menu(SDL_Renderer* renderer);
     ~Menu();
+
     void handleEvent(SDL_Event& e, bool& quit, int& currentScreen);
     void render(SDL_Renderer* renderer);
 
@@ -30,6 +31,7 @@ private:
     Background* background;
 
     SDL_Texture* createTextTexture(SDL_Renderer* renderer, const std::string& text, SDL_Color color);
+    void createButtons(SDL_Renderer* renderer, const std::vector<std::string>& labels);
 };
 
 #endif // MENU_H

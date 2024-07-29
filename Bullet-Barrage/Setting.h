@@ -6,17 +6,17 @@
 #include <SDL_mixer.h>
 #include <string>
 #include <vector>
-#include "main.h"
+#include <filesystem>
 
 class Setting {
 public:
     Setting(SDL_Renderer* renderer);
     ~Setting();
+
     void handleEvent(SDL_Event& e, bool& quit, int& volume, int& currentTrack, bool& goToMenu);
     void render(SDL_Renderer* renderer);
     void changeTrack(int trackIndex);
 
-    // Thêm các phương thức này
     int getVolume() const;
     void setVolume(int volume);
 
@@ -61,8 +61,13 @@ private:
 
     Mix_Music* music;
 
-    // Thêm biến volume
     int volume;
+
+    void loadTextures(SDL_Renderer* renderer);
+    void initializeTrackData();
+    void initializeSlider();
+    void initializeButtons();
+    void updateTrackNameTexture(SDL_Renderer* renderer, const std::string& trackName);
 };
 
 #endif // SETTING_H

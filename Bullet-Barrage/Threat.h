@@ -7,7 +7,7 @@
 
 class Threat {
 public:
-    enum ThreatType {
+    enum class ThreatType {
         BULLET,
         METEOR
     };
@@ -35,6 +35,9 @@ private:
     float velY;
     Uint32 lastUpdateTime;
     ThreatType type;
+
+    void loadTexture(SDL_Renderer* renderer, const std::string& path);
+    void setupFrames();
 };
 
 #endif // THREAT_H
