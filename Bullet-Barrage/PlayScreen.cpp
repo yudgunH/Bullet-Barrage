@@ -3,12 +3,16 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
+#include <cstdlib> // For srand() and rand()
+#include <ctime>   // For time()
 
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
     : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),
     returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen),
     setting(setting), previousVolume(50), pausedTime(0), elapsedTime(0),
     isPaused(false), isRunning(false), score(score) {
+
+    srand(static_cast<unsigned>(time(0))); // Seed for random number generation
 
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
@@ -21,6 +25,8 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Sc
     typhoon = new Threat(renderer, "typhoon.png", Threat::ThreatType::TYPHOON);
     boom = new Threat(renderer, "boom.png", Threat::ThreatType::BOOM);
 
+    resetThreats(); // Initialize threats with random positions
+
     loadTextures();
     initRects();
     updateScoreTexture();
@@ -29,7 +35,7 @@ PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Sc
 PlayScreen::~PlayScreen() {
     delete player;
     delete background;
-    //delete bullet;
+    delete bullet;
     delete meteor;
     delete kunai;
     delete planet;
@@ -138,14 +144,21 @@ void PlayScreen::reset() {
     updateScoreTexture();
     player->reset();
     background->reset();
-    bullet->reset();
-    meteor->reset();
-    kunai->reset();
-    planet->reset();
-    poison->reset();
-    rocket->reset();
-    typhoon->reset();
-    boom->reset();
+    resetThreats(); // Reset threats to new random positions
+}
+
+void PlayScreen::resetThreats() {
+    int screenWidth = 1881; // Example screen width, adjust as needed
+    int screenHeight = 918; // Example screen height, adjust as needed
+
+    bullet->setPosition(rand() % screenWidth, rand() % screenHeight);
+    meteor->setPosition(rand() % screenWidth, rand() % screenHeight);
+    kunai->setPosition(rand() % screenWidth, rand() % screenHeight);
+    planet->setPosition(rand() % screenWidth, rand() % screenHeight);
+    poison->setPosition(rand() % screenWidth, rand() % screenHeight);
+    rocket->setPosition(rand() % screenWidth, rand() % screenHeight);
+    typhoon->setPosition(rand() % screenWidth, rand() % screenHeight);
+    boom->setPosition(rand() % screenWidth, rand() % screenHeight);
 }
 
 void PlayScreen::handleEvent(SDL_Event& e) {
@@ -218,7 +231,7 @@ void PlayScreen::update() {
         elapsedTime = (currentTime - startTime) / 1000;
         background->update();
         player->move();
-        
+
         bullet->update();
         meteor->update();
         kunai->update();
@@ -235,7 +248,7 @@ void PlayScreen::update() {
 void PlayScreen::render(SDL_Renderer* renderer) {
     background->render(renderer);
     player->render(renderer);
-    
+
     bullet->render(renderer);
     meteor->render(renderer);
     kunai->render(renderer);

@@ -24,6 +24,7 @@ public:
     void update();
     void render(SDL_Renderer* renderer);
     void reset();
+    void setPosition(int x, int y); // New method to set the position of the threat
 
 private:
     SDL_Texture* texture;

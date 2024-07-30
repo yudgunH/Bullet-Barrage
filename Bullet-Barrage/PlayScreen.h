@@ -75,6 +75,7 @@ private:
     void updateScoreTexture();
     void loadTextures();
     void initRects();
+    void resetThreats();  // New method to reset threats' positions
 };
 
 #endif // PLAYSCREEN_H

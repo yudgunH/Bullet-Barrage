@@ -109,3 +109,8 @@ void Threat::reset() {
     currentFrame = 0;
     lastFrameTime = SDL_GetTicks();
 }
+
+void Threat::setPosition(int x, int y) {
+    x_pos = static_cast<float>(x);
+    y_pos = static_cast<float>(y);
+}
