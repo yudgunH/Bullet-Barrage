@@ -16,6 +16,11 @@ ScoreScreen::~ScoreScreen() {
     SDL_DestroyTexture(scoreTexture);
     SDL_DestroyTexture(backButtonTexture);
     SDL_DestroyTexture(backButtonHoverTexture);
+    for (int i = 0; i < 10; ++i) {
+        if (scoreTextures[i]) {
+            SDL_DestroyTexture(scoreTextures[i]);
+        }
+    }
 }
 
 void ScoreScreen::loadTextures(SDL_Renderer* renderer) {
@@ -52,13 +57,6 @@ void ScoreScreen::handleEvent(SDL_Event& e, int* currentScreen) {
     }
 }
 
-void ScoreScreen::render(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
-    SDL_RenderCopy(renderer, scoreTexture, NULL, &scoreRect);
-
-    SDL_RenderCopy(renderer, backButtonHover ? backButtonHoverTexture : backButtonTexture, NULL, &backButtonRect);
-}
-
 void ScoreScreen::updateScoreTexture(SDL_Renderer* renderer) {
     TTF_Font* font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 48);
     if (!font) {
@@ -67,24 +65,48 @@ void ScoreScreen::updateScoreTexture(SDL_Renderer* renderer) {
     }
 
     SDL_Color textColor = { 0, 0, 0, 255 };
-    std::string scoreText = "Top Scores:\n";
     const std::vector<int>& topScores = score->getTopScores();
+    std::string scoreText;
+
+    // Clear existing score texture if any
+    for (int i = 0; i < 10; ++i) {
+        if (scoreTextures[i]) {
+            SDL_DestroyTexture(scoreTextures[i]);
+            scoreTextures[i] = nullptr;
+        }
+    }
+
+    // Set custom positions for scores
+    int leftX = 450;  // New X position for left column
+    int rightX = 1000; // New X position for right column
+    int startY = 350; // New starting Y position
+    int yIncrement = 60; // New Y increment between scores
+
     for (size_t i = 0; i < topScores.size(); ++i) {
-        scoreText += std::to_string(i + 1) + ". " + std::to_string(topScores[i]) + "\n";
+        scoreText = std::to_string(i + 1) + ". " + std::to_string(topScores[i]);
+        SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreText.c_str(), textColor);
+        scoreTextures[i] = SDL_CreateTextureFromSurface(renderer, textSurface);
+        if (i < 5) {
+            scoreRects[i] = { leftX, startY + static_cast<int>(i) * yIncrement, textSurface->w, textSurface->h };
+        }
+        else {
+            scoreRects[i] = { rightX, startY + static_cast<int>(i - 5) * yIncrement, textSurface->w, textSurface->h };
+        }
+        SDL_FreeSurface(textSurface);
     }
 
-    SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(font, scoreText.c_str(), textColor, scoreRect.w);
-    if (!textSurface) {
-        std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
-        TTF_CloseFont(font);
-        return;
-    }
-
-    scoreTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    SDL_FreeSurface(textSurface);
     TTF_CloseFont(font);
+}
 
-    if (!scoreTexture) {
-        std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+void ScoreScreen::render(SDL_Renderer* renderer) {
+    SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
+
+    // Render scores
+    for (int i = 0; i < 10; ++i) {
+        if (scoreTextures[i]) {
+            SDL_RenderCopy(renderer, scoreTextures[i], NULL, &scoreRects[i]);
+        }
     }
+
+    SDL_RenderCopy(renderer, backButtonHover ? backButtonHoverTexture : backButtonTexture, NULL, &backButtonRect);
 }

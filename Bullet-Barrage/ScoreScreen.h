@@ -24,6 +24,9 @@ private:
     SDL_Rect backButtonRect;
     bool backButtonHover;
 
+    SDL_Texture* scoreTextures[10];
+    SDL_Rect scoreRects[10];
+
     void updateScoreTexture(SDL_Renderer* renderer);
     void loadTextures(SDL_Renderer* renderer);
 };

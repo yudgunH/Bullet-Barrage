@@ -2,8 +2,8 @@
 #include <iostream>
 
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
-    : posX(600), posY(540), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
-    onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(540), jumpForce(200),
+    : posX(600), posY(840), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
+    onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(840), jumpForce(200),
     playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false),
     moveRight(false), lastMoveTime(0) {
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
@@ -195,7 +195,7 @@ void Player::render(SDL_Renderer* renderer) {
 
 void Player::reset() {
     posX = 600;
-    posY = 540;
+    posY = 840;
     velY = 0;
     frame = 0;
     direction = RIGHT;
