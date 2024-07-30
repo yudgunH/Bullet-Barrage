@@ -15,6 +15,11 @@ public:
     void move();
     void render(SDL_Renderer* renderer);
     void reset();
+    
+    float getPosX() const;
+    float getPosY() const;
+    int getWidth() const;
+    int getHeight() const;
 
 private:
     float posX;

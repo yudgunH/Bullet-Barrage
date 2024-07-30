@@ -240,6 +240,8 @@ void PlayScreen::update() {
         rocket->update();
         typhoon->update();
         boom->update();
+
+        handleCollisions(); // Add this line
     }
 
     updateScoreTexture();
@@ -298,5 +300,24 @@ void PlayScreen::updateScoreTexture() {
 
     if (!scoreTexture) {
         std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+    }
+}
+
+void PlayScreen::handleCollisions() {
+    SDL_Rect playerRect = { static_cast<int>(player->getPosX()), static_cast<int>(player->getPosY()), player->getWidth(), player->getHeight() };
+
+    SDL_Rect bulletRect = { static_cast<int>(bullet->getXPos()), static_cast<int>(bullet->getYPos()), bullet->getWidth(), bullet->getHeight() };
+    SDL_Rect meteorRect = { static_cast<int>(meteor->getXPos()), static_cast<int>(meteor->getYPos()), meteor->getWidth(), meteor->getHeight() };
+    SDL_Rect kunaiRect = { static_cast<int>(kunai->getXPos()), static_cast<int>(kunai->getYPos()), kunai->getWidth(), kunai->getHeight() };
+    SDL_Rect planetRect = { static_cast<int>(planet->getXPos()), static_cast<int>(planet->getYPos()), planet->getWidth(), planet->getHeight() };
+    SDL_Rect poisonRect = { static_cast<int>(poison->getXPos()), static_cast<int>(poison->getYPos()), poison->getWidth(), poison->getHeight() };
+    SDL_Rect rocketRect = { static_cast<int>(rocket->getXPos()), static_cast<int>(rocket->getYPos()), rocket->getWidth(), rocket->getHeight() };
+    SDL_Rect typhoonRect = { static_cast<int>(typhoon->getXPos()), static_cast<int>(typhoon->getYPos()), typhoon->getWidth(), typhoon->getHeight() };
+    SDL_Rect boomRect = { static_cast<int>(boom->getXPos()), static_cast<int>(boom->getYPos()), boom->getWidth(), boom->getHeight() };
+
+    if (Collision::checkCollision(playerRect, bulletRect) || Collision::checkCollision(playerRect, meteorRect) || Collision::checkCollision(playerRect, kunaiRect) ||
+        Collision::checkCollision(playerRect, planetRect) || Collision::checkCollision(playerRect, poisonRect) || Collision::checkCollision(playerRect, rocketRect) ||
+        Collision::checkCollision(playerRect, typhoonRect) || Collision::checkCollision(playerRect, boomRect)) {
+        player->reset(); // Handle collision (e.g., reset player, reduce health, etc.)
     }
 }

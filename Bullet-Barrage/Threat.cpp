@@ -42,6 +42,22 @@ Threat::~Threat() {
     SDL_DestroyTexture(texture);
 }
 
+float Threat::getXPos() const {
+    return x_pos;
+}
+
+float Threat::getYPos() const {
+    return y_pos;
+}
+
+int Threat::getWidth() const {
+    return frameWidth;
+}
+
+int Threat::getHeight() const {
+    return frameHeight;
+}
+
 void Threat::loadTexture(SDL_Renderer* renderer, const std::string& path) {
     std::string filePath = "../assets/img/threats/" + path;
     SDL_Surface* loadedSurface = IMG_Load(filePath.c_str());

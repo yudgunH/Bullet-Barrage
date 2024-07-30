@@ -7,6 +7,7 @@
 #include "Threat.h"
 #include "Setting.h"
 #include "Score.h"
+#include "Collision.h" // Add this line
 
 class PlayScreen {
 public:
@@ -76,6 +77,7 @@ private:
     void loadTextures();
     void initRects();
     void resetThreats();  // New method to reset threats' positions
+    void handleCollisions(); // Add this method
 };
 
 #endif // PLAYSCREEN_H

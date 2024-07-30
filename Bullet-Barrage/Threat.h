@@ -26,6 +26,12 @@ public:
     void reset();
     void setPosition(int x, int y); // New method to set the position of the threat
 
+    float getXPos() const;
+    float getYPos() const;
+    int getWidth() const;
+    int getHeight() const;
+
+
 private:
     SDL_Texture* texture;
     std::vector<SDL_Rect> frames;

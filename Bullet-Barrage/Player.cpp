@@ -33,6 +33,22 @@ Player::~Player() {
     for (auto texture : jumpRightTextures) SDL_DestroyTexture(texture);
 }
 
+float Player::getPosX() const {
+    return posX;
+}
+
+float Player::getPosY() const {
+    return posY;
+}
+
+int Player::getWidth() const {
+    return runWidth; // Or the appropriate width depending on the player's state
+}
+
+int Player::getHeight() const {
+    return runHeight; // Or the appropriate height depending on the player's state
+}
+
 void Player::loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount) {
     for (int i = 0; i < frameCount; ++i) {
         std::string filePath = path + (i < 10 ? "0" : "") + std::to_string(i) + ".png";
