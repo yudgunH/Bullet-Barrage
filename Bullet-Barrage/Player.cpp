@@ -1,9 +1,10 @@
 ﻿#include "Player.h"
 #include <iostream>
 
+
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
-    : posX(600), posY(840), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
-    onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(840), jumpForce(200),
+    : posX(600), posY(700), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
+    onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(700), jumpForce(200),
     playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false),
     moveRight(false), lastMoveTime(0) {
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
@@ -61,7 +62,7 @@ void Player::handleEvent(SDL_Event& e) {
         switch (e.key.keysym.sym) {
         case SDLK_UP:
             if (onGround) {
-                velY = -jumpForce / 20;
+                velY = -jumpForce / 20.0f; // Thêm 'f' để chỉ định kiểu float
                 jumpStartY = posY;
                 jumpTargetY = posY - jumpForce;
                 onGround = false;
@@ -69,7 +70,7 @@ void Player::handleEvent(SDL_Event& e) {
                 lastJumpTime = SDL_GetTicks();
             }
             else if (!onGround && canDoubleJump) {
-                velY = -jumpForce / 20;
+                velY = -jumpForce / 20.0f; // Thêm 'f' để chỉ định kiểu float
                 jumpStartY = posY;
                 jumpTargetY = posY - jumpForce;
                 state = JUMPING;
@@ -130,7 +131,7 @@ void Player::move() {
             }
             else {
                 if (currentTime > peakTime + peakDelay) {
-                    velY = jumpForce / 20;
+                    velY = jumpForce / 20.0f; // Thêm 'f' để chỉ định kiểu float
                     if (posY < groundY) {
                         posY += velY;
                     }
@@ -188,14 +189,14 @@ void Player::render(SDL_Renderer* renderer) {
     }
 
     if (currentTextures && !currentTextures->empty()) {
-        SDL_Rect renderQuad = { posX, posY, renderWidth, renderHeight };
+        SDL_Rect renderQuad = { static_cast<int>(posX), static_cast<int>(posY), renderWidth, renderHeight };
         SDL_RenderCopy(renderer, (*currentTextures)[frame % currentTextures->size()], NULL, &renderQuad);
     }
 }
 
 void Player::reset() {
     posX = 600;
-    posY = 840;
+    posY = 700;
     velY = 0;
     frame = 0;
     direction = RIGHT;

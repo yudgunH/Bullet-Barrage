@@ -3,8 +3,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
-#include <cstdlib> // For srand() and rand()
-#include <ctime>   // For time()
+#include <cstdlib> 
+#include <ctime>   
 
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
     : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),

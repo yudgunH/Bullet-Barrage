@@ -17,25 +17,21 @@ public:
     void reset();
 
 private:
-    void loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount);
-
-    enum Direction { LEFT, RIGHT };
-    enum State { IDLE, RUNNING, JUMPING };
-
-    int posX, posY;
-    int velY;
+    float posX;
+    float posY;
+    float velY;
     int frame;
     int animationSpeed;
     Uint32 lastFrameTime;
-    Direction direction;
-    State state;
+    enum Direction { LEFT, RIGHT } direction;
+    enum State { IDLE, RUNNING, JUMPING } state;
     bool onGround;
     bool canDoubleJump;
     bool reachedPeak;
-    int jumpStartY;
-    int jumpTargetY;
-    int groundY;
-    int jumpForce;
+    float jumpStartY;
+    float jumpTargetY;
+    float groundY;
+    float jumpForce;
     int playerStep;
     Uint32 lastStepTime;
     Uint32 stepDelay;
@@ -46,9 +42,6 @@ private:
     bool moveLeft;
     bool moveRight;
     Uint32 lastMoveTime;
-    int idleWidth, idleHeight;
-    int runWidth, runHeight;
-    int jumpWidth, jumpHeight;
 
     std::vector<SDL_Texture*> idleLeftTextures;
     std::vector<SDL_Texture*> idleRightTextures;
@@ -56,6 +49,15 @@ private:
     std::vector<SDL_Texture*> runRightTextures;
     std::vector<SDL_Texture*> jumpLeftTextures;
     std::vector<SDL_Texture*> jumpRightTextures;
+
+    int idleWidth;
+    int idleHeight;
+    int runWidth;
+    int runHeight;
+    int jumpWidth;
+    int jumpHeight;
+
+    void loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount);
 };
 
 #endif // PLAYER_H
