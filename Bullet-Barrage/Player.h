@@ -70,7 +70,8 @@ private:
     int jumpWidth;
     int jumpHeight;
 
-    Mix_Chunk* jumpSound; // Thêm biến cho hiệu ứng âm thanh nhảy
+    Mix_Chunk* jumpSound; 
+    Mix_Chunk* hittedSound;
 
     void loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount);
 };

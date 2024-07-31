@@ -14,19 +14,19 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     loadTextures(renderer, base_path + "/Jump_L/Character_1-jump_", jumpLeftTextures, 14);
     loadTextures(renderer, base_path + "/Jump_R/Character_1-jump_", jumpRightTextures, 14);
 
-    // Kiểm tra nếu bất kỳ texture nào bị lỗi
-    if (idleLeftTextures.empty() || idleRightTextures.empty() ||
-        runLeftTextures.empty() || runRightTextures.empty() ||
-        jumpLeftTextures.empty() || jumpRightTextures.empty()) {
-        std::cerr << "Error loading textures" << std::endl;
-    }
-
     // Load jump sound effect
     jumpSound = Mix_LoadWAV("../assets/jump-sound.mp3");
     if (jumpSound == nullptr) {
         std::cerr << "Failed to load jump sound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
     }
 
+    // Load hitted sound effect
+    hittedSound = Mix_LoadWAV("../assets/hitted.mp3");
+    if (hittedSound == nullptr) {
+        std::cerr << "Failed to load hitted sound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
+    }
+
+    // Other initializations
     float scaleFactor = 0.35f;
 
     idleWidth = static_cast<int>(195 * scaleFactor);
@@ -45,9 +45,13 @@ Player::~Player() {
     for (auto texture : jumpLeftTextures) SDL_DestroyTexture(texture);
     for (auto texture : jumpRightTextures) SDL_DestroyTexture(texture);
 
-    Mix_FreeChunk(jumpSound); // Giải phóng hiệu ứng âm thanh
+    Mix_FreeChunk(jumpSound); // Giải phóng hiệu ứng âm thanh khi nhảy
     jumpSound = nullptr;
+
+    Mix_FreeChunk(hittedSound); // Giải phóng hiệu ứng âm thanh khi va chạm
+    hittedSound = nullptr;
 }
+
 
 float Player::getPosX() const {
     return posX;
@@ -74,6 +78,7 @@ void Player::reduceHealth() {
         health--;
         isInvincible = true;
         invincibleStartTime = SDL_GetTicks();
+        Mix_PlayChannel(-1, hittedSound, 0); 
     }
 }
 

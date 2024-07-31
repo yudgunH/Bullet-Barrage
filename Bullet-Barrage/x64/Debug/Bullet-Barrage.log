@@ -5,8 +5,8 @@ G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(88,19): warning C4244: 'init
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(91,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(92,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   Player.cpp
-G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(208,45): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(211,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(213,45): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\Player.cpp(216,20): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   ScoreScreen.cpp
   main.cpp
   Generating Code...
