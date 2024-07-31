@@ -56,6 +56,11 @@ int main(int argc, char* args[]) {
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
+                if (currentScreen == GAME) {
+                    score.saveScores(scoreFile);  
+                    score.loadScores(scoreFile);  
+                    scoreScreen.updateScoreTexture(renderer); 
+                }
                 quit = true;
             }
             else {
@@ -72,11 +77,10 @@ int main(int argc, char* args[]) {
                     break;
                 case GAME:
                     playScreen.handleEvent(e);
-                    if (e.type == SDL_QUIT) {
-                        quit = true;
-                    }
                     if (currentScreen != GAME) {
-                        score.saveScores(scoreFile);
+                        score.saveScores(scoreFile);  
+                        score.loadScores(scoreFile);  
+                        scoreScreen.updateScoreTexture(renderer); 
                         playScreen.reset();
                     }
                     break;

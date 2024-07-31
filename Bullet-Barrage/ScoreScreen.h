@@ -12,7 +12,7 @@ public:
 
     void handleEvent(SDL_Event& e, int* currentScreen);
     void render(SDL_Renderer* renderer);
-
+    void updateScoreTexture(SDL_Renderer* renderer);
 private:
     SDL_Texture* backgroundTexture;
     SDL_Texture* scoreTexture;
@@ -27,7 +27,7 @@ private:
     SDL_Texture* scoreTextures[10];
     SDL_Rect scoreRects[10];
 
-    void updateScoreTexture(SDL_Renderer* renderer);
+    
     void loadTextures(SDL_Renderer* renderer);
 };
 
