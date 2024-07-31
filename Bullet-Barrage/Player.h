@@ -20,6 +20,9 @@ public:
     float getPosY() const;
     int getWidth() const;
     int getHeight() const;
+    int getHealth() const;
+    void updateInvincibility();
+    void reduceHealth();
 
 private:
     float posX;
@@ -47,6 +50,10 @@ private:
     bool moveLeft;
     bool moveRight;
     Uint32 lastMoveTime;
+    int health;
+    bool isInvincible;            // Trạng thái bất tử
+    Uint32 invincibleStartTime;   // Thời gian bắt đầu bất tử
+    Uint32 invincibleDuration;    // Thời gian kéo dài bất tử
 
     std::vector<SDL_Texture*> idleLeftTextures;
     std::vector<SDL_Texture*> idleRightTextures;

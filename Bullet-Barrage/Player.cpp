@@ -6,7 +6,8 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     : posX(600), posY(700), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
     onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(700), jumpForce(200),
     playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false),
-    moveRight(false), lastMoveTime(0) {
+    moveRight(false), lastMoveTime(0), health(3), isInvincible(false), invincibleDuration(500)
+{
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
     loadTextures(renderer, base_path + "/idle_R/Character_1-idle_", idleRightTextures, 31);
     loadTextures(renderer, base_path + "/Run_L/Character_1-Run_", runLeftTextures, 27);
@@ -23,6 +24,7 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     jumpWidth = static_cast<int>(361 * scaleFactor);
     jumpHeight = static_cast<int>(421 * scaleFactor);
 }
+
 
 Player::~Player() {
     for (auto texture : idleLeftTextures) SDL_DestroyTexture(texture);
@@ -42,11 +44,32 @@ float Player::getPosY() const {
 }
 
 int Player::getWidth() const {
-    return runWidth; // Or the appropriate width depending on the player's state
+    return runWidth; 
 }
 
 int Player::getHeight() const {
-    return runHeight; // Or the appropriate height depending on the player's state
+    return runHeight; 
+}
+
+int Player::getHealth() const {
+    return health;
+}
+
+void Player::reduceHealth() {
+    if (!isInvincible && health > 0) {
+        health--;
+        isInvincible = true; // Bật trạng thái bất tử
+        invincibleStartTime = SDL_GetTicks(); // Ghi lại thời gian bắt đầu bất tử
+    }
+}
+
+void Player::updateInvincibility() {
+    if (isInvincible) {
+        Uint32 currentTime = SDL_GetTicks();
+        if (currentTime > invincibleStartTime + invincibleDuration) {
+            isInvincible = false; // Tắt trạng thái bất tử sau khi hết thời gian
+        }
+    }
 }
 
 void Player::loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount) {
@@ -223,4 +246,6 @@ void Player::reset() {
     jumpStartY = 0;
     jumpTargetY = 0;
     lastFrameTime = SDL_GetTicks();
+    health = 3;
+    isInvincible = false; // Đặt lại trạng thái bất tử khi reset
 }

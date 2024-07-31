@@ -48,6 +48,9 @@ private:
     SDL_Texture* audioButtonHoverTexture;
     SDL_Texture* audioButtonOffTexture;
     SDL_Texture* audioButtonOffHoverTexture;
+    SDL_Texture* heartFullTexture;
+    SDL_Texture* heartEmptyTexture;
+    SDL_Rect heartRects[3];
     SDL_Rect menuButtonRect;
     SDL_Rect miniMenuRect;
     SDL_Rect homeButtonRect;

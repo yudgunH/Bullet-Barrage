@@ -56,6 +56,8 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(audioButtonOffTexture);
     SDL_DestroyTexture(audioButtonOffHoverTexture);
     SDL_DestroyTexture(scoreTexture);
+    SDL_DestroyTexture(heartFullTexture);
+    SDL_DestroyTexture(heartEmptyTexture);
 }
 
 void PlayScreen::loadTextures() {
@@ -70,6 +72,8 @@ void PlayScreen::loadTextures() {
     audioButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Audio.png");
     audioButtonOffTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_AudioOff.png");
     audioButtonOffHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_AudioOff.png");
+    heartFullTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Large_HeartFull.png");
+    heartEmptyTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Large_HeartEmpty.png");
 }
 
 void PlayScreen::initRects() {
@@ -88,7 +92,11 @@ void PlayScreen::initRects() {
     }
 
     miniMenuRect = { (1881 - newWidth) / 2, (918 - newHeight) / 2, newWidth, newHeight };
-
+    
+    for (int i = 0; i < 3; ++i) {
+        heartRects[i] = { 20 + i * 50, 20, 40, 40 }; // Điều chỉnh tọa độ và kích thước trái tim
+    }
+    
     SDL_FreeSurface(miniMenuSurface);
 
     menuButtonRect = { 1881 - 70, 20, 50, 50 };
@@ -230,6 +238,7 @@ void PlayScreen::update() {
         Uint32 currentTime = SDL_GetTicks();
         elapsedTime = (currentTime - startTime) / 1000;
         background->update();
+        player->updateInvincibility(); // Cập nhật trạng thái bất tử
         player->move();
 
         bullet->update();
@@ -241,7 +250,7 @@ void PlayScreen::update() {
         typhoon->update();
         boom->update();
 
-        handleCollisions(); // Add this line
+        handleCollisions();
     }
 
     updateScoreTexture();
@@ -259,6 +268,16 @@ void PlayScreen::render(SDL_Renderer* renderer) {
     rocket->render(renderer);
     typhoon->render(renderer);
     boom->render(renderer);
+
+    int currentHealth = player->getHealth();
+    for (int i = 0; i < 3; ++i) {
+        if (i < currentHealth) {
+            SDL_RenderCopy(renderer, heartFullTexture, nullptr, &heartRects[i]);
+        }
+        else {
+            SDL_RenderCopy(renderer, heartEmptyTexture, nullptr, &heartRects[i]);
+        }
+    }
 
     SDL_RenderCopy(renderer, menuButtonHover ? menuButtonHoverTexture : menuButtonTexture, nullptr, &menuButtonRect);
     SDL_RenderCopy(renderer, scoreTexture, nullptr, &scoreRect);
@@ -318,6 +337,11 @@ void PlayScreen::handleCollisions() {
     if (Collision::checkCollision(playerRect, bulletRect) || Collision::checkCollision(playerRect, meteorRect) || Collision::checkCollision(playerRect, kunaiRect) ||
         Collision::checkCollision(playerRect, planetRect) || Collision::checkCollision(playerRect, poisonRect) || Collision::checkCollision(playerRect, rocketRect) ||
         Collision::checkCollision(playerRect, typhoonRect) || Collision::checkCollision(playerRect, boomRect)) {
-        player->reset(); // Handle collision (e.g., reset player, reduce health, etc.)
+        player->reduceHealth(); // Giảm máu khi va chạm
+
+        if (player->getHealth() <= 0) {
+            // Xử lý khi người chơi hết máu, có thể kết thúc trò chơi hoặc reset
+            player->reset();
+        }
     }
 }
