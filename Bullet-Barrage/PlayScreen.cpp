@@ -55,6 +55,7 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(audioButtonHoverTexture);
     SDL_DestroyTexture(audioButtonOffTexture);
     SDL_DestroyTexture(audioButtonOffHoverTexture);
+
     SDL_DestroyTexture(scoreTexture);
     SDL_DestroyTexture(heartFullTexture);
     SDL_DestroyTexture(heartEmptyTexture);

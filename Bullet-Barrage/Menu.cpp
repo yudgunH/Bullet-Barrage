@@ -9,7 +9,7 @@ Menu::Menu(SDL_Renderer* renderer) {
         exit(1);
     }
 
-    font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 24);
+    font = TTF_OpenFont("../assets/fonts/PressStart2P-Regular.ttf", 24);
     if (!font) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         exit(1);

@@ -6,7 +6,7 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     : posX(600), posY(700), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
     onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(700), jumpForce(200),
     playerStep(5), lastStepTime(0), stepDelay(10), lastJumpTime(0), jumpDelay(20), peakDelay(200), peakTime(0), moveLeft(false),
-    moveRight(false), lastMoveTime(0), health(3), isInvincible(false), invincibleDuration(500)
+    moveRight(false), lastMoveTime(0), health(3), isInvincible(false), invincibleDuration(1000)
 {
     loadTextures(renderer, base_path + "/idle_L/Character_1-idle_", idleLeftTextures, 31);
     loadTextures(renderer, base_path + "/idle_R/Character_1-idle_", idleRightTextures, 31);

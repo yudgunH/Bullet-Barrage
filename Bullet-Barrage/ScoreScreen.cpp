@@ -58,7 +58,7 @@ void ScoreScreen::handleEvent(SDL_Event& e, int* currentScreen) {
 }
 
 void ScoreScreen::updateScoreTexture(SDL_Renderer* renderer) {
-    TTF_Font* font = TTF_OpenFont("../assets/fonts/dlxfont_.ttf", 48);
+    TTF_Font* font = TTF_OpenFont("../assets/fonts/PressStart2P-Regular.ttf", 48);
     if (!font) {
         std::cerr << "Failed to load font! TTF_Error: " << TTF_GetError() << std::endl;
         return;
