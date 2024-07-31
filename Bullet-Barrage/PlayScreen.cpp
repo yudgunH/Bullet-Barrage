@@ -93,11 +93,11 @@ void PlayScreen::initRects() {
     }
 
     miniMenuRect = { (1881 - newWidth) / 2, (918 - newHeight) / 2, newWidth, newHeight };
-    
+
     for (int i = 0; i < 3; ++i) {
-        heartRects[i] = { 20 + i * 50, 20, 40, 40 }; // Điều chỉnh tọa độ và kích thước trái tim
+        heartRects[i] = { 20 + i * 50, 20, 40, 40 };
     }
-    
+
     SDL_FreeSurface(miniMenuSurface);
 
     menuButtonRect = { 1881 - 70, 20, 50, 50 };
@@ -153,12 +153,12 @@ void PlayScreen::reset() {
     updateScoreTexture();
     player->reset();
     background->reset();
-    resetThreats(); // Reset threats to new random positions
+    resetThreats();
 }
 
 void PlayScreen::resetThreats() {
-    int screenWidth = 1881; // Example screen width, adjust as needed
-    int screenHeight = 918; // Example screen height, adjust as needed
+    int screenWidth = 1881;
+    int screenHeight = 918;
 
     bullet->setPosition(rand() % screenWidth, rand() % screenHeight);
     meteor->setPosition(rand() % screenWidth, rand() % screenHeight);
@@ -239,7 +239,7 @@ void PlayScreen::update() {
         Uint32 currentTime = SDL_GetTicks();
         elapsedTime = (currentTime - startTime) / 1000;
         background->update();
-        player->updateInvincibility(); // Cập nhật trạng thái bất tử
+        player->updateInvincibility();
         player->move();
 
         bullet->update();
@@ -338,10 +338,9 @@ void PlayScreen::handleCollisions() {
     if (Collision::checkCollision(playerRect, bulletRect) || Collision::checkCollision(playerRect, meteorRect) || Collision::checkCollision(playerRect, kunaiRect) ||
         Collision::checkCollision(playerRect, planetRect) || Collision::checkCollision(playerRect, poisonRect) || Collision::checkCollision(playerRect, rocketRect) ||
         Collision::checkCollision(playerRect, typhoonRect) || Collision::checkCollision(playerRect, boomRect)) {
-        player->reduceHealth(); // Giảm máu khi va chạm
+        player->reduceHealth();
 
         if (player->getHealth() <= 0) {
-            // Xử lý khi người chơi hết máu, có thể kết thúc trò chơi hoặc reset
             player->reset();
         }
     }

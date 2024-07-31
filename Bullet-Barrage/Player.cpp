@@ -1,7 +1,6 @@
 ﻿#include "Player.h"
 #include <iostream>
 
-
 Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     : posX(600), posY(700), velY(0), frame(0), animationSpeed(32), lastFrameTime(0), direction(RIGHT), state(IDLE),
     onGround(true), canDoubleJump(true), reachedPeak(false), jumpStartY(0), jumpTargetY(0), groundY(700), jumpForce(200),
@@ -15,7 +14,20 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     loadTextures(renderer, base_path + "/Jump_L/Character_1-jump_", jumpLeftTextures, 14);
     loadTextures(renderer, base_path + "/Jump_R/Character_1-jump_", jumpRightTextures, 14);
 
-    float scaleFactor = 0.35f; // Add 'f' suffix to specify float
+    // Kiểm tra nếu bất kỳ texture nào bị lỗi
+    if (idleLeftTextures.empty() || idleRightTextures.empty() ||
+        runLeftTextures.empty() || runRightTextures.empty() ||
+        jumpLeftTextures.empty() || jumpRightTextures.empty()) {
+        std::cerr << "Error loading textures" << std::endl;
+    }
+
+    // Load jump sound effect
+    jumpSound = Mix_LoadWAV("../assets/jump-sound.mp3");
+    if (jumpSound == nullptr) {
+        std::cerr << "Failed to load jump sound effect! SDL_mixer Error: " << Mix_GetError() << std::endl;
+    }
+
+    float scaleFactor = 0.35f;
 
     idleWidth = static_cast<int>(195 * scaleFactor);
     idleHeight = static_cast<int>(385 * scaleFactor);
@@ -25,7 +37,6 @@ Player::Player(SDL_Renderer* renderer, const std::string& base_path)
     jumpHeight = static_cast<int>(421 * scaleFactor);
 }
 
-
 Player::~Player() {
     for (auto texture : idleLeftTextures) SDL_DestroyTexture(texture);
     for (auto texture : idleRightTextures) SDL_DestroyTexture(texture);
@@ -33,6 +44,9 @@ Player::~Player() {
     for (auto texture : runRightTextures) SDL_DestroyTexture(texture);
     for (auto texture : jumpLeftTextures) SDL_DestroyTexture(texture);
     for (auto texture : jumpRightTextures) SDL_DestroyTexture(texture);
+
+    Mix_FreeChunk(jumpSound); // Giải phóng hiệu ứng âm thanh
+    jumpSound = nullptr;
 }
 
 float Player::getPosX() const {
@@ -44,11 +58,11 @@ float Player::getPosY() const {
 }
 
 int Player::getWidth() const {
-    return runWidth; 
+    return runWidth;
 }
 
 int Player::getHeight() const {
-    return runHeight; 
+    return runHeight;
 }
 
 int Player::getHealth() const {
@@ -58,8 +72,8 @@ int Player::getHealth() const {
 void Player::reduceHealth() {
     if (!isInvincible && health > 0) {
         health--;
-        isInvincible = true; // Bật trạng thái bất tử
-        invincibleStartTime = SDL_GetTicks(); // Ghi lại thời gian bắt đầu bất tử
+        isInvincible = true;
+        invincibleStartTime = SDL_GetTicks();
     }
 }
 
@@ -67,7 +81,7 @@ void Player::updateInvincibility() {
     if (isInvincible) {
         Uint32 currentTime = SDL_GetTicks();
         if (currentTime > invincibleStartTime + invincibleDuration) {
-            isInvincible = false; // Tắt trạng thái bất tử sau khi hết thời gian
+            isInvincible = false;
         }
     }
 }
@@ -101,20 +115,22 @@ void Player::handleEvent(SDL_Event& e) {
         switch (e.key.keysym.sym) {
         case SDLK_UP:
             if (onGround) {
-                velY = -jumpForce / 20.0f; // Thêm 'f' để chỉ định kiểu float
+                velY = -jumpForce / 20.0f;
                 jumpStartY = posY;
                 jumpTargetY = posY - jumpForce;
                 onGround = false;
                 state = JUMPING;
                 lastJumpTime = SDL_GetTicks();
+                Mix_PlayChannel(-1, jumpSound, 0); // Phát âm thanh khi nhảy
             }
             else if (!onGround && canDoubleJump) {
-                velY = -jumpForce / 20.0f; // Thêm 'f' để chỉ định kiểu float
+                velY = -jumpForce / 20.0f;
                 jumpStartY = posY;
                 jumpTargetY = posY - jumpForce;
                 state = JUMPING;
                 canDoubleJump = false;
                 lastJumpTime = SDL_GetTicks();
+                Mix_PlayChannel(-1, jumpSound, 0); // Phát âm thanh khi nhảy
             }
             break;
         case SDLK_LEFT:
@@ -170,7 +186,7 @@ void Player::move() {
             }
             else {
                 if (currentTime > peakTime + peakDelay) {
-                    velY = jumpForce / 20.0f; // Thêm 'f' để chỉ định kiểu float
+                    velY = jumpForce / 20.0f;
                     if (posY < groundY) {
                         posY += velY;
                     }
@@ -231,6 +247,9 @@ void Player::render(SDL_Renderer* renderer) {
         SDL_Rect renderQuad = { static_cast<int>(posX), static_cast<int>(posY), renderWidth, renderHeight };
         SDL_RenderCopy(renderer, (*currentTextures)[frame % currentTextures->size()], NULL, &renderQuad);
     }
+    else {
+        std::cerr << "No textures available to render!" << std::endl;
+    }
 }
 
 void Player::reset() {
@@ -247,5 +266,5 @@ void Player::reset() {
     jumpTargetY = 0;
     lastFrameTime = SDL_GetTicks();
     health = 3;
-    isInvincible = false; // Đặt lại trạng thái bất tử khi reset
+    isInvincible = false;
 }

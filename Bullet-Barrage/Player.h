@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h> // Thêm thư viện SDL_mixer
 #include <vector>
 #include <string>
 
@@ -15,7 +16,7 @@ public:
     void move();
     void render(SDL_Renderer* renderer);
     void reset();
-    
+
     float getPosX() const;
     float getPosY() const;
     int getWidth() const;
@@ -51,9 +52,9 @@ private:
     bool moveRight;
     Uint32 lastMoveTime;
     int health;
-    bool isInvincible;            // Trạng thái bất tử
-    Uint32 invincibleStartTime;   // Thời gian bắt đầu bất tử
-    Uint32 invincibleDuration;    // Thời gian kéo dài bất tử
+    bool isInvincible;
+    Uint32 invincibleStartTime;
+    Uint32 invincibleDuration;
 
     std::vector<SDL_Texture*> idleLeftTextures;
     std::vector<SDL_Texture*> idleRightTextures;
@@ -68,6 +69,8 @@ private:
     int runHeight;
     int jumpWidth;
     int jumpHeight;
+
+    Mix_Chunk* jumpSound; // Thêm biến cho hiệu ứng âm thanh nhảy
 
     void loadTextures(SDL_Renderer* renderer, const std::string& path, std::vector<SDL_Texture*>& textures, int frameCount);
 };
