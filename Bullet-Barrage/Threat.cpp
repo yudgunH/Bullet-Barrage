@@ -8,11 +8,11 @@ Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
     lastUpdateTime(0), type(type) {
 
     if (type == ThreatType::METEOR) {
-        frameWidth = 15;
+        frameWidth = 26;
         frameHeight = 31;
         y_pos = -frameHeight;
     }
-    else if (type == ThreatType::KUNAI || type == ThreatType::PLANET || type == ThreatType::POISON) {
+    else if (type == ThreatType::KUNAI) {
         frameWidth = 15;
         frameHeight = 16;
     }
@@ -24,13 +24,23 @@ Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
     }
     else if (type == ThreatType::TYPHOON) {
         frameWidth = 16;
-        frameHeight = 24;
-        frameCount = 2;
+        frameHeight = 78;
+        frameCount = 5;
+    }
+    else if (type == ThreatType::POISON) {
+        frameWidth = 31;
+        frameHeight = 20;
+        frameCount = 4;
+    }
+    else if (type == ThreatType::PLANET) {
+        frameWidth = 32;
+        frameHeight = 17;
+        frameCount = 5;
     }
     else if (type == ThreatType::BOOM) {
-        frameWidth = 18;
-        frameHeight = 15;
-        frameCount = 6;
+        frameWidth = 35;
+        frameHeight = 47;
+        frameCount = 5;
         y_pos = -frameHeight;
     }
 
