@@ -3,26 +3,19 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
-#include <cstdlib> 
-#include <ctime>   
+#include <cmath> // Include for sin and cos functions
 
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
     : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),
     returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen),
     setting(setting), previousVolume(50), pausedTime(0), elapsedTime(0),
-    isPaused(false), isRunning(false), score(score) {
+    isPaused(false), isRunning(false), score(score), lastBulletTime(0) {
 
     srand(static_cast<unsigned>(time(0))); // Seed for random number generation
 
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
     bullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
-    meteor = new Threat(renderer, "meteor.png", Threat::ThreatType::METEOR);
-    kunai = new Threat(renderer, "kunai.png", Threat::ThreatType::KUNAI);
-    planet = new Threat(renderer, "planet.png", Threat::ThreatType::PLANET);
-    poison = new Threat(renderer, "poison.png", Threat::ThreatType::POISON);
-    rocket = new Threat(renderer, "rocket.png", Threat::ThreatType::ROCKET);
-    typhoon = new Threat(renderer, "typhoon.png", Threat::ThreatType::TYPHOON);
     boom = new Threat(renderer, "boom.png", Threat::ThreatType::BOOM);
 
     resetThreats(); // Initialize threats with random positions
@@ -36,12 +29,6 @@ PlayScreen::~PlayScreen() {
     delete player;
     delete background;
     delete bullet;
-    delete meteor;
-    delete kunai;
-    delete planet;
-    delete poison;
-    delete rocket;
-    delete typhoon;
     delete boom;
 
     SDL_DestroyTexture(menuButtonTexture);
@@ -59,6 +46,11 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(scoreTexture);
     SDL_DestroyTexture(heartFullTexture);
     SDL_DestroyTexture(heartEmptyTexture);
+
+    // Giải phóng bộ nhớ cho các viên đạn trong danh sách
+    for (auto& bullet : bullets) {
+        delete bullet;
+    }
 }
 
 void PlayScreen::loadTextures() {
@@ -161,12 +153,6 @@ void PlayScreen::resetThreats() {
     int screenHeight = 918;
 
     bullet->setPosition(rand() % screenWidth, rand() % screenHeight);
-    meteor->setPosition(rand() % screenWidth, rand() % screenHeight);
-    kunai->setPosition(rand() % screenWidth, rand() % screenHeight);
-    planet->setPosition(rand() % screenWidth, rand() % screenHeight);
-    poison->setPosition(rand() % screenWidth, rand() % screenHeight);
-    rocket->setPosition(rand() % screenWidth, rand() % screenHeight);
-    typhoon->setPosition(rand() % screenWidth, rand() % screenHeight);
     boom->setPosition(rand() % screenWidth, rand() % screenHeight);
 }
 
@@ -234,6 +220,25 @@ void PlayScreen::handleEvent(SDL_Event& e) {
     }
 }
 
+void PlayScreen::createSpiralPattern(int numBullets, float speed) {
+    float angleIncrement = 360.0f / numBullets; // Góc tăng giữa các viên đạn
+    float angle = 0.0f;
+
+    for (int i = 0; i < numBullets; ++i) {
+        Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
+
+        // Tính toán vận tốc theo hướng xoắn ốc
+        float velX = speed * cos(angle * M_PI / 180.0f);
+        float velY = speed * sin(angle * M_PI / 180.0f);
+
+        newBullet->setPosition(940, 450); // Vị trí trung tâm
+        newBullet->setVelocity(velX, velY); // Đặt vận tốc theo hướng xoắn ốc
+        bullets.push_back(newBullet);
+
+        angle += angleIncrement;
+    }
+}
+
 void PlayScreen::update() {
     if (!miniMenuActive && !isPaused && isRunning) {
         Uint32 currentTime = SDL_GetTicks();
@@ -242,15 +247,27 @@ void PlayScreen::update() {
         player->updateInvincibility();
         player->move();
 
-        bullet->update();
-        meteor->update();
-        kunai->update();
-        planet->update();
-        poison->update();
-        rocket->update();
-        typhoon->update();
-        boom->update();
+        // Kiểm tra và tạo đạn mỗi 2 giây
+        if (currentTime - lastBulletTime >= 2000) { // 2000 ms tương ứng với 2 giây
+            createSpiralPattern(10, 0.1f); // Tạo 10 viên đạn theo mô hình xoắn ốc với vận tốc 3.0f
+            lastBulletTime = currentTime;
+        }
 
+        // Cập nhật và kiểm tra vị trí các viên đạn
+        for (auto it = bullets.begin(); it != bullets.end();) {
+            (*it)->update();
+
+            // Nếu viên đạn ra ngoài màn hình, xóa nó
+            if ((*it)->getXPos() < 0 || (*it)->getXPos() > 1881 || (*it)->getYPos() > 918 || (*it)->getYPos() < 0) {
+                delete* it;
+                it = bullets.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+
+        boom->update();
         handleCollisions();
     }
 
@@ -261,13 +278,10 @@ void PlayScreen::render(SDL_Renderer* renderer) {
     background->render(renderer);
     player->render(renderer);
 
-    bullet->render(renderer);
-    meteor->render(renderer);
-    kunai->render(renderer);
-    planet->render(renderer);
-    poison->render(renderer);
-    rocket->render(renderer);
-    typhoon->render(renderer);
+    for (auto& bullet : bullets) {
+        bullet->render(renderer);
+    }
+
     boom->render(renderer);
 
     int currentHealth = player->getHealth();
@@ -326,20 +340,19 @@ void PlayScreen::updateScoreTexture() {
 void PlayScreen::handleCollisions() {
     SDL_Rect playerRect = { static_cast<int>(player->getPosX()), static_cast<int>(player->getPosY()), player->getWidth(), player->getHeight() };
 
-    SDL_Rect bulletRect = { static_cast<int>(bullet->getXPos()), static_cast<int>(bullet->getYPos()), bullet->getWidth(), bullet->getHeight() };
-    SDL_Rect meteorRect = { static_cast<int>(meteor->getXPos()), static_cast<int>(meteor->getYPos()), meteor->getWidth(), meteor->getHeight() };
-    SDL_Rect kunaiRect = { static_cast<int>(kunai->getXPos()), static_cast<int>(kunai->getYPos()), kunai->getWidth(), kunai->getHeight() };
-    SDL_Rect planetRect = { static_cast<int>(planet->getXPos()), static_cast<int>(planet->getYPos()), planet->getWidth(), planet->getHeight() };
-    SDL_Rect poisonRect = { static_cast<int>(poison->getXPos()), static_cast<int>(poison->getYPos()), poison->getWidth(), poison->getHeight() };
-    SDL_Rect rocketRect = { static_cast<int>(rocket->getXPos()), static_cast<int>(rocket->getYPos()), rocket->getWidth(), rocket->getHeight() };
-    SDL_Rect typhoonRect = { static_cast<int>(typhoon->getXPos()), static_cast<int>(typhoon->getYPos()), typhoon->getWidth(), typhoon->getHeight() };
+    for (auto& bullet : bullets) {
+        SDL_Rect bulletRect = { static_cast<int>(bullet->getXPos()), static_cast<int>(bullet->getYPos()), bullet->getWidth(), bullet->getHeight() };
+        if (Collision::checkCollision(playerRect, bulletRect)) {
+            player->reduceHealth();
+            if (player->getHealth() <= 0) {
+                player->reset();
+            }
+        }
+    }
+
     SDL_Rect boomRect = { static_cast<int>(boom->getXPos()), static_cast<int>(boom->getYPos()), boom->getWidth(), boom->getHeight() };
-
-    if (Collision::checkCollision(playerRect, bulletRect) || Collision::checkCollision(playerRect, meteorRect) || Collision::checkCollision(playerRect, kunaiRect) ||
-        Collision::checkCollision(playerRect, planetRect) || Collision::checkCollision(playerRect, poisonRect) || Collision::checkCollision(playerRect, rocketRect) ||
-        Collision::checkCollision(playerRect, typhoonRect) || Collision::checkCollision(playerRect, boomRect)) {
+    if (Collision::checkCollision(playerRect, boomRect)) {
         player->reduceHealth();
-
         if (player->getHealth() <= 0) {
             player->reset();
         }

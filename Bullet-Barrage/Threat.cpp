@@ -1,48 +1,12 @@
 ﻿#include "Threat.h"
 #include <SDL_image.h>
 #include <iostream>
+#include <cmath>
 
 Threat::Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type)
     : texture(nullptr), currentFrame(0), frameCount(6), frameWidth(16), frameHeight(16),
-    lastFrameTime(0), frameDelay(100), x_pos(0), y_pos(0), velX(0.5f), velY(2.0f),
+    lastFrameTime(0), frameDelay(100), x_pos(0), y_pos(0), velX(0.0f), velY(0.0f),
     lastUpdateTime(0), type(type) {
-
-    if (type == ThreatType::METEOR) {
-        frameWidth = 26;
-        frameHeight = 31;
-        y_pos = -frameHeight;
-    }
-    else if (type == ThreatType::KUNAI) {
-        frameWidth = 15;
-        frameHeight = 16;
-    }
-    else if (type == ThreatType::ROCKET) {
-        frameWidth = 15;
-        frameHeight = 40;
-        frameCount = 5;
-        y_pos = -frameHeight;
-    }
-    else if (type == ThreatType::TYPHOON) {
-        frameWidth = 16;
-        frameHeight = 78;
-        frameCount = 5;
-    }
-    else if (type == ThreatType::POISON) {
-        frameWidth = 31;
-        frameHeight = 20;
-        frameCount = 4;
-    }
-    else if (type == ThreatType::PLANET) {
-        frameWidth = 32;
-        frameHeight = 17;
-        frameCount = 5;
-    }
-    else if (type == ThreatType::BOOM) {
-        frameWidth = 35;
-        frameHeight = 47;
-        frameCount = 5;
-        y_pos = -frameHeight;
-    }
 
     loadTexture(renderer, path);
     setupFrames();
@@ -88,15 +52,17 @@ void Threat::loadTexture(SDL_Renderer* renderer, const std::string& path) {
 void Threat::setupFrames() {
     for (int i = 0; i < frameCount; ++i) {
         SDL_Rect frame = { i * frameWidth, 0, frameWidth, frameHeight };
-        if (type == ThreatType::BOOM) {
-            frame = { 0, i * frameHeight, frameWidth, frameHeight }; // frames vertical for BOOM
-        }
         frames.push_back(frame);
     }
 
     if (frames.empty()) {
         std::cerr << "No frames were loaded. Check the paths and files." << std::endl;
     }
+}
+
+void Threat::setVelocity(float x, float y) {
+    velX = x;
+    velY = y;
 }
 
 void Threat::update() {
@@ -106,20 +72,16 @@ void Threat::update() {
         lastFrameTime = currentTime;
     }
 
-    if (currentTime > lastUpdateTime + 16) {
-        if (type == ThreatType::BULLET || type == ThreatType::KUNAI || type == ThreatType::PLANET || type == ThreatType::POISON || type == ThreatType::TYPHOON) {
-            x_pos += velX;
-            if (x_pos > 1881) x_pos = -frameWidth;
-        }
-        else if (type == ThreatType::METEOR || type == ThreatType::ROCKET || type == ThreatType::BOOM) {
-            y_pos += velY;
-            if (y_pos > 918) {
-                y_pos = -frameHeight;
-                x_pos = rand() % (1881 - frameWidth);
-            }
-        }
-        lastUpdateTime = currentTime;
+    // Cập nhật vị trí dựa trên vận tốc hiện tại
+    x_pos += velX;
+    y_pos += velY;
+
+    // Kiểm tra nếu viên đạn đã ra khỏi màn hình
+    if (x_pos < 0 || x_pos > 1881 || y_pos > 918 || y_pos < 0) {
+        // Logic để xóa đạn ra khỏi màn hình sẽ được xử lý trong lớp PlayScreen
     }
+
+    lastUpdateTime = currentTime;
 }
 
 void Threat::render(SDL_Renderer* renderer) {
@@ -127,13 +89,6 @@ void Threat::render(SDL_Renderer* renderer) {
         SDL_Rect destRect = { static_cast<int>(x_pos), static_cast<int>(y_pos), frameWidth, frameHeight };
         SDL_RenderCopy(renderer, texture, &frames[currentFrame], &destRect);
     }
-}
-
-void Threat::reset() {
-    x_pos = 0;
-    y_pos = 0;
-    currentFrame = 0;
-    lastFrameTime = SDL_GetTicks();
 }
 
 void Threat::setPosition(int x, int y) {

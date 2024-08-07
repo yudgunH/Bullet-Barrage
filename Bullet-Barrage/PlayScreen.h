@@ -2,6 +2,7 @@
 #define PLAYSCREEN_H
 
 #include <SDL.h>
+#include <vector> // Để sử dụng std::vector
 #include "Player.h"
 #include "Background.h"
 #include "Threat.h"
@@ -28,14 +29,8 @@ private:
     SDL_Renderer* renderer;
     Player* player;
     Background* background;
-    Threat* bullet;
-    Threat* meteor;
-    Threat* kunai;
-    Threat* planet;
-    Threat* poison;
-    Threat* rocket;
-    Threat* typhoon;
-    Threat* boom;
+    Threat* bullet; // Giữ lại bullet
+    Threat* boom;   // Giữ lại boom
 
     SDL_Texture* menuButtonTexture;
     SDL_Texture* menuButtonHoverTexture;
@@ -69,6 +64,7 @@ private:
     Uint32 startTime;
     Uint32 pausedTime;
     Uint32 elapsedTime;
+    Uint32 lastBulletTime; // Thời gian để theo dõi việc bắn đạn
     bool isPaused;
     bool isRunning;
 
@@ -76,11 +72,15 @@ private:
     SDL_Rect scoreRect;
     Score* score;
 
+    std::vector<Threat*> bullets; // Danh sách các viên đạn bullet
+
     void updateScoreTexture();
     void loadTextures();
     void initRects();
     void resetThreats();
     void handleCollisions();
+    void addBullet(); // Thêm phương thức addBullet để tạo viên đạn mỗi 2 giây
+    void createSpiralPattern(int numBullets, float speed);
 };
 
 #endif // PLAYSCREEN_H

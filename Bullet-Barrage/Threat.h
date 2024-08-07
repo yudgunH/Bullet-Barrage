@@ -2,20 +2,15 @@
 #define THREAT_H
 
 #include <SDL.h>
-#include <string>
 #include <vector>
+#include <string>
 
 class Threat {
 public:
     enum class ThreatType {
         BULLET,
-        METEOR,
-        KUNAI,
-        PLANET,
-        POISON,
-        ROCKET,
-        TYPHOON,
-        BOOM
+        BOOM,
+        // Thêm các loại khác nếu cần
     };
 
     Threat(SDL_Renderer* renderer, const std::string& path, ThreatType type);
@@ -23,14 +18,13 @@ public:
 
     void update();
     void render(SDL_Renderer* renderer);
-    void reset();
-    void setPosition(int x, int y); // New method to set the position of the threat
+    void setPosition(int x, int y);
+    void setVelocity(float x, float y); // Thêm phương thức để thiết lập vận tốc
 
     float getXPos() const;
     float getYPos() const;
     int getWidth() const;
     int getHeight() const;
-
 
 private:
     SDL_Texture* texture;
@@ -46,6 +40,7 @@ private:
     float y_pos;
     float velX;
     float velY;
+
     Uint32 lastUpdateTime;
     ThreatType type;
 
