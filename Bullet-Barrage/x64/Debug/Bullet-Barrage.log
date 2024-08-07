@@ -7,7 +7,9 @@ G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(148,54): warning C4244: 'arg
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(148,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(149,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(149,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(244,52): warning C4305: 'argument': truncation from 'double' to 'float'
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(243,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(244,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(264,52): warning C4305: 'argument': truncation from 'double' to 'float'
   main.cpp
   Generating Code...
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe

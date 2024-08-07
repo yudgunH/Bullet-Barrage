@@ -231,6 +231,26 @@ void PlayScreen::createCrossPattern(int numBullets, float speed, float angleIncr
     }
 }
 
+
+void PlayScreen::createRoundPattern(int numBullets, float speed) {
+    float angleIncrement = 360.0f / numBullets; // Góc tăng giữa các viên đạn
+    float angle = 0.0f;
+
+    for (int i = 0; i < numBullets; ++i) {
+        Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
+
+        // Tính toán vận tốc theo hướng xoắn ốc
+        float velX = speed * cos(angle * M_PI / 180.0f);
+        float velY = speed * sin(angle * M_PI / 180.0f);
+
+        newBullet->setPosition(940, 450); // Vị trí trung tâm
+        newBullet->setVelocity(velX, velY); // Đặt vận tốc theo hướng xoắn ốc
+        bullets.push_back(newBullet);
+
+        angle += angleIncrement;
+    }
+}
+
 void PlayScreen::update() {
     if (!miniMenuActive && !isPaused && isRunning) {
         Uint32 currentTime = SDL_GetTicks();
@@ -242,6 +262,7 @@ void PlayScreen::update() {
         if (currentTime - lastBulletTime >= 2000) { // Fire bullets every 2 seconds
             createCrossPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
             createCrossPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
+            createRoundPattern(10, 0.1f);
             lastBulletTime = currentTime;
         }
 

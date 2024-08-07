@@ -81,6 +81,7 @@ private:
     void resetThreats();
     void handleCollisions();
     void createCrossPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y);
+    void createRoundPattern(int numBullets, float speed);
 };
 
 #endif // PLAYSCREEN_H
