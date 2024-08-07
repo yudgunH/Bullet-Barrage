@@ -1,24 +1,20 @@
 ﻿#include "PlayScreen.h"
-#include "main.h"
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
-#include <cmath> // Include for sin and cos functions
+#include <cmath>
 
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
-    : renderer(renderer), menuButtonHover(false), miniMenuActive(false), homeButtonHover(false),
-    returnButtonHover(false), audioButtonHover(false), audioOn(true), currentScreen(screen),
-    setting(setting), previousVolume(50), pausedTime(0), elapsedTime(0),
-    isPaused(false), isRunning(false), score(score), lastBulletTime(0) {
-
-    srand(static_cast<unsigned>(time(0))); // Seed for random number generation
+    : renderer(renderer), currentScreen(screen), setting(setting), score(score), lastBulletTime(0),
+    isPaused(false), isRunning(false), menuButtonHover(false), miniMenuActive(false),
+    homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), audioOn(true), previousVolume(50) {
 
     player = new Player(renderer, "../assets/img/character");
     background = new Background(renderer, "../assets/img/cities");
     bullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
     boom = new Threat(renderer, "boom.png", Threat::ThreatType::BOOM);
 
-    resetThreats(); // Initialize threats with random positions
+    resetThreats();
 
     loadTextures();
     initRects();
@@ -42,12 +38,10 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(audioButtonHoverTexture);
     SDL_DestroyTexture(audioButtonOffTexture);
     SDL_DestroyTexture(audioButtonOffHoverTexture);
-
     SDL_DestroyTexture(scoreTexture);
     SDL_DestroyTexture(heartFullTexture);
     SDL_DestroyTexture(heartEmptyTexture);
 
-    // Giải phóng bộ nhớ cho các viên đạn trong danh sách
     for (auto& bullet : bullets) {
         delete bullet;
     }
@@ -71,7 +65,6 @@ void PlayScreen::loadTextures() {
 
 void PlayScreen::initRects() {
     SDL_Surface* miniMenuSurface = IMG_Load("../assets/img/UI/miniMenu.png");
-
     int originalWidth = miniMenuSurface->w;
     int originalHeight = miniMenuSurface->h;
     float aspectRatio = static_cast<float>(originalWidth) / originalHeight;
@@ -220,19 +213,18 @@ void PlayScreen::handleEvent(SDL_Event& e) {
     }
 }
 
-void PlayScreen::createSpiralPattern(int numBullets, float speed) {
-    float angleIncrement = 360.0f / numBullets; // Góc tăng giữa các viên đạn
-    float angle = 0.0f;
+
+void PlayScreen::createCrossPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y) {
+    float angle = angle_;
 
     for (int i = 0; i < numBullets; ++i) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
-        // Tính toán vận tốc theo hướng xoắn ốc
-        float velX = speed * cos(angle * M_PI / 180.0f);
-        float velY = speed * sin(angle * M_PI / 180.0f);
+        float velX = speed * cos(angle);
+        float velY = speed * sin(angle);
 
-        newBullet->setPosition(940, 450); // Vị trí trung tâm
-        newBullet->setVelocity(velX, velY); // Đặt vận tốc theo hướng xoắn ốc
+        newBullet->setPosition(x, y);
+        newBullet->setVelocity(velX, velY);
         bullets.push_back(newBullet);
 
         angle += angleIncrement;
@@ -247,17 +239,15 @@ void PlayScreen::update() {
         player->updateInvincibility();
         player->move();
 
-        // Kiểm tra và tạo đạn mỗi 2 giây
-        if (currentTime - lastBulletTime >= 2000) { // 2000 ms tương ứng với 2 giây
-            createSpiralPattern(10, 0.1f); // Tạo 10 viên đạn theo mô hình xoắn ốc với vận tốc 3.0f
+        if (currentTime - lastBulletTime >= 2000) { // Fire bullets every 2 seconds
+            createCrossPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
+            createCrossPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
             lastBulletTime = currentTime;
         }
 
-        // Cập nhật và kiểm tra vị trí các viên đạn
         for (auto it = bullets.begin(); it != bullets.end();) {
             (*it)->update();
 
-            // Nếu viên đạn ra ngoài màn hình, xóa nó
             if ((*it)->getXPos() < 0 || (*it)->getXPos() > 1881 || (*it)->getYPos() > 918 || (*it)->getYPos() < 0) {
                 delete* it;
                 it = bullets.erase(it);
