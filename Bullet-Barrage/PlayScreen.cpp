@@ -260,8 +260,8 @@ void PlayScreen::update() {
         player->move();
 
         if (currentTime - lastBulletTime >= 2000) { // Fire bullets every 2 seconds
-            createCrossPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
-            createCrossPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
+           // createCrossPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
+           // createCrossPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
             createRoundPattern(10, 0.1f);
             lastBulletTime = currentTime;
         }
