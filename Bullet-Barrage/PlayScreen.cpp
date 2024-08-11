@@ -214,7 +214,7 @@ void PlayScreen::handleEvent(SDL_Event& e) {
 }
 
 
-void PlayScreen::createCrossPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y) {
+void PlayScreen::createSpreadPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y) {
     float angle = angle_;
 
     for (int i = 0; i < numBullets; ++i) {
@@ -251,6 +251,70 @@ void PlayScreen::createRoundPattern(int numBullets, float speed) {
     }
 }
 
+void PlayScreen::createSpiralPattern(double x, double y) {
+    for (int i = 0; i <= 1; ++i) {
+        Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
+
+        // Tính toán hướng đi của viên đạn
+        float radianAngle = (angle + 180.0f * i) * M_PI / 180.0f;
+        float dx = std::cos(radianAngle) * maxSpeed;
+        float dy = std::sin(radianAngle) * maxSpeed;
+
+        // Thiết lập vị trí và vận tốc cho viên đạn
+        newBullet->setPosition(x, y); // Vị trí bắn
+        newBullet->setVelocity(dx, dy);
+        bullets.push_back(newBullet);
+
+
+        angle += 10.0f;
+        if (angle >= 360.0f) {
+            angle = 0.0f;
+        }
+    }
+}
+
+void PlayScreen::createSinglePattern() {
+    int startX;
+    float speed = 1.0f;
+
+    // Seed cho hàm rand, chỉ cần thực hiện một lần khi chương trình khởi động
+    static bool seeded = false;
+    if (!seeded) {
+        srand(static_cast<unsigned int>(time(0)));
+        seeded = true;
+    }
+
+    // Random chọn bên bắn (0 hoặc 1)
+    bool shootFromLeft = rand() % 2 == 0;
+
+    if (shootFromLeft) {
+        // Bắn từ trái
+        startX = 100;
+    }
+    else {
+        // Bắn từ phải
+        startX = 1700;
+        speed = -speed; // Đảo chiều tốc độ để bắn từ phải sang trái
+    }
+
+    // Bắn 3 viên đạn xếp thành hàng dọc
+    for (int j = 0; j < 3; ++j) {
+        Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
+
+        int startY = 700 + j * 50; // Vị trí Y của mỗi viên đạn cách nhau 50 pixel
+
+        // Đặt vận tốc với giới hạn
+        float velX = std::min(std::abs(speed), 1.0f) * (speed > 0 ? 1 : -1);
+        float velY = 0.0f;
+
+        newBullet->setPosition(startX, startY); // Đặt vị trí bắt đầu của đạn
+        newBullet->setVelocity(velX, velY); // Đặt vận tốc của đạn
+
+        bullets.push_back(newBullet);
+    }
+}
+
+
 void PlayScreen::update() {
     if (!miniMenuActive && !isPaused && isRunning) {
         Uint32 currentTime = SDL_GetTicks();
@@ -259,11 +323,19 @@ void PlayScreen::update() {
         player->updateInvincibility();
         player->move();
 
+        // Kiểm tra và bắn đạn cho các hàm bắn khác
         if (currentTime - lastBulletTime >= 2000) { // Fire bullets every 2 seconds
-           // createCrossPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
-           // createCrossPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
+            createSpreadPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
+            createSpreadPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
             createRoundPattern(10, 0.1f);
+            createSinglePattern();
             lastBulletTime = currentTime;
+        }
+
+        // Kiểm tra và bắn đạn cho createSpiralPattern
+        if (currentTime - lastSpiralBulletTime >= 200) { // Fire bullets every 0.5 seconds
+            createSpiralPattern(940, 100);
+            lastSpiralBulletTime = currentTime;
         }
 
         for (auto it = bullets.begin(); it != bullets.end();) {
@@ -284,6 +356,7 @@ void PlayScreen::update() {
 
     updateScoreTexture();
 }
+
 
 void PlayScreen::render(SDL_Renderer* renderer) {
     background->render(renderer);

@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 #include <vector>
+#include <cstdlib>  
+#include <ctime>
 #include "Player.h"
 #include "Background.h"
 #include "Threat.h"
@@ -66,12 +68,16 @@ private:
     Uint32 pausedTime;
     Uint32 elapsedTime;
     Uint32 lastBulletTime;
+    Uint32 lastSpiralBulletTime;
     bool isPaused;
     bool isRunning;
 
     SDL_Texture* scoreTexture;
     SDL_Rect scoreRect;
     Score* score;
+
+    float angle = 0.0f;
+    const float maxSpeed = 0.5f;
 
     std::vector<Threat*> bullets;
 
@@ -80,8 +86,10 @@ private:
     void initRects();
     void resetThreats();
     void handleCollisions();
-    void createCrossPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y);
+    void createSpreadPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y);
     void createRoundPattern(int numBullets, float speed);
+    void createSpiralPattern(double x, double y);
+    void createSinglePattern();
 };
 
 #endif // PLAYSCREEN_H
