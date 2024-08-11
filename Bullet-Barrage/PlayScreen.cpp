@@ -137,10 +137,20 @@ void PlayScreen::reset() {
     audioButtonHover = false;
     audioOn = true;
     updateScoreTexture();
+
+    // Reset player và background
     player->reset();
     background->reset();
-    resetThreats();
+
+    // Xóa tất cả các viên đạn hiện tại
+    for (auto& bullet : bullets) {
+        delete bullet;
+    }
+    bullets.clear();
+
+    resetThreats(); // Thiết lập lại vị trí của các threat như ban đầu
 }
+
 
 void PlayScreen::resetThreats() {
     int screenWidth = 1881;
@@ -377,7 +387,7 @@ void PlayScreen::update() {
 
             case 3: // Round Pattern
                 if (currentTime - lastBulletTime >= 1000) { // Fire bullets every 1 second
-                    createRoundPattern(9, 0.5f);
+                    createRoundPattern(9, 0.3f);
                     lastBulletTime = currentTime;
                 }
                 if (currentTime - startTimeOfCurrentPattern >= 6000) { // Hoạt động trong 6 giây
@@ -422,10 +432,6 @@ void PlayScreen::update() {
 
     updateScoreTexture();
 }
-
-
-
-
 
 
 void PlayScreen::render(SDL_Renderer* renderer) {
@@ -501,14 +507,6 @@ void PlayScreen::handleCollisions() {
             if (player->getHealth() <= 0) {
                 player->reset();
             }
-        }
-    }
-
-    SDL_Rect boomRect = { static_cast<int>(boom->getXPos()), static_cast<int>(boom->getYPos()), boom->getWidth(), boom->getHeight() };
-    if (Collision::checkCollision(playerRect, boomRect)) {
-        player->reduceHealth();
-        if (player->getHealth() <= 0) {
-            player->reset();
         }
     }
 }
