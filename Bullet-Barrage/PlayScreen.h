@@ -69,6 +69,12 @@ private:
     Uint32 elapsedTime;
     Uint32 lastBulletTime;
     Uint32 lastSpiralBulletTime;
+
+    Uint32 startTimeOfCurrentPattern;
+    int currentPattern; // 1 = Spiral, 2 = Single, 3 = Round, 4 = Spread
+    bool isPatternActive;
+    bool isPatternCompleted;
+
     bool isPaused;
     bool isRunning;
 
@@ -90,6 +96,7 @@ private:
     void createRoundPattern(int numBullets, float speed);
     void createSpiralPattern(double x, double y);
     void createSinglePattern();
+    void startNewPattern(); // Hàm để bắt đầu pattern mới
 };
 
 #endif // PLAYSCREEN_H

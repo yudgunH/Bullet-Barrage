@@ -1,18 +1,18 @@
 ﻿  PlayScreen.cpp
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(72,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(73,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(76,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(77,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(148,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(148,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(149,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(149,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(73,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(74,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(77,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(78,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(149,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(149,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(150,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(150,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(242,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(243,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(244,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(259,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(264,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(264,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(310,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(310,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(329,53): warning C4305: 'argument': truncation from 'double' to 'float'
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(309,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(309,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(391,61): warning C4305: 'argument': truncation from 'double' to 'float'
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe
