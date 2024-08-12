@@ -51,10 +51,13 @@ private:
     SDL_Texture* replayButtonTexture;
     SDL_Texture* replayButtonHoverTexture;
 
-    // Thêm các biến cho thông báo điểm số
     SDL_Texture* scoreNotificationTexture;
     SDL_Rect scoreNotificationRect;
     int lastScore; // Biến lưu điểm số cuối cùng khi trò chơi kết thúc
+
+    // Thêm các biến cho nội dung gameplay
+    SDL_Texture* gameplayTexture;
+    SDL_Rect gameplayRect;
 
     SDL_Rect heartRects[3];
     SDL_Rect menuButtonRect;

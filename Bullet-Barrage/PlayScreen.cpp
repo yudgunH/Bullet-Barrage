@@ -45,6 +45,7 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(replayButtonTexture);
     SDL_DestroyTexture(replayButtonHoverTexture);
     SDL_DestroyTexture(scoreNotificationTexture);
+    SDL_DestroyTexture(gameplayTexture);
 
     for (auto& bullet : bullets) {
         delete bullet;
@@ -57,8 +58,8 @@ void PlayScreen::loadTextures() {
     miniMenuTexture = IMG_LoadTexture(renderer, "../assets/img/UI/miniMenu.png");
     homeButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Home.png");
     homeButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Home.png");
-    returnButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Return.png");
-    returnButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Return.png");
+    returnButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Pause.png");
+    returnButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Pause.png");
     audioButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_Audio.png");
     audioButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_Audio.png");
     audioButtonOffTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_WhiteOutline_AudioOff.png");
@@ -68,20 +69,37 @@ void PlayScreen::loadTextures() {
     replayButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/PremadeButtons_Replay.png");
     replayButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/PremadeButtons_Replay_Hover.png");
 
-    // Tải thêm texture cho thông báo điểm số
-    TTF_Init();
-    TTF_Font* font = TTF_OpenFont("../assets/fonts/PressStart2P-Regular.ttf", 48);
-    SDL_Color textColor = { 0, 0, 0, 255 };
+    // Load font và tạo texture cho thông báo điểm số
+    TTF_Font* font = TTF_OpenFont("../assets/fonts/PressStart2P-Regular.ttf", 45); // Kích thước font cho scoreMessage
+    SDL_Color textColor = { 0, 0, 0, 255 }; // Màu đen
     scoreNotificationTexture = nullptr;
     scoreNotificationRect = { 0, 0, 0, 0 };
     if (font) {
-        std::string scoreMessage = "Your Score: " + std::to_string(lastScore);
+        std::string scoreMessage = "Your Score:" + std::to_string(lastScore);
         SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreMessage.c_str(), textColor);
         if (textSurface) {
             scoreNotificationTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-            scoreNotificationRect = { (1881 - textSurface->w) / 2, (918 - textSurface->h) / 4, textSurface->w, textSurface->h };
+            scoreNotificationRect = { (1881 - textSurface->w) / 2, (918 - textSurface->h) / 4 + 150, textSurface->w, textSurface->h };
             SDL_FreeSurface(textSurface);
         }
+
+        TTF_Font* gameplayFont = TTF_OpenFont("../assets/fonts/PressStart2P-Regular.ttf", 24);
+        if (gameplayFont) {
+            std::string gameplayText = "Gameplay:\n\nThe player must dodge bullets being fired from all directions.\n\n"
+                "The objective of the game is to survive as long as possible by moving left, right, and up\n"
+                "using the movement buttons to avoid getting hit.";
+            SDL_Surface* textSurfaceGameplay = TTF_RenderText_Blended_Wrapped(gameplayFont, gameplayText.c_str(), textColor, 500);
+            if (textSurfaceGameplay) {
+                gameplayTexture = SDL_CreateTextureFromSurface(renderer, textSurfaceGameplay);
+                // Cập nhật gameplayRect chỉ nếu nó chưa được khởi tạo
+                if (gameplayRect.w == 0 && gameplayRect.h == 0) {
+                    gameplayRect = { (1881 - textSurfaceGameplay->w) / 2, miniMenuRect.y + 235, textSurfaceGameplay->w, textSurfaceGameplay->h };
+                }
+                SDL_FreeSurface(textSurfaceGameplay);
+            }
+            TTF_CloseFont(gameplayFont);
+        }
+
         TTF_CloseFont(font);
     }
 }
@@ -117,10 +135,11 @@ void PlayScreen::initRects() {
     homeButtonRect = { miniMenuRect.x + buttonSpacing, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
     returnButtonRect = { homeButtonRect.x + buttonWidth + buttonSpacing, homeButtonRect.y, buttonWidth, buttonHeight };
     audioButtonRect = { returnButtonRect.x + buttonWidth + buttonSpacing, returnButtonRect.y, buttonWidth, buttonHeight };
-    replayButtonRect = { (1881 - buttonWidth) / 2, miniMenuRect.y + miniMenuRect.h / 2, buttonWidth, buttonHeight };
+    replayButtonRect = { (1881 - buttonWidth) / 2, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
 
     scoreRect = { menuButtonRect.x - 100, menuButtonRect.y, 90, 50 };
 }
+
 
 void PlayScreen::pause() {
     if (!isPaused) {
@@ -387,6 +406,7 @@ void PlayScreen::update() {
             startNewPattern();
         }
         else {
+            // Logic cho các pattern
             switch (currentPattern) {
             case 1:
                 if (currentTime - lastSpiralBulletTime >= 200) {
@@ -463,7 +483,7 @@ void PlayScreen::update() {
             miniMenuActive = true;
             gameOverMenuActive = true;
             isRunning = false;
-            loadTextures(); // Tải lại texture để cập nhật thông báo điểm số
+            loadTextures(); 
         }
 
         handleCollisions();
@@ -499,11 +519,6 @@ void PlayScreen::render(SDL_Renderer* renderer) {
         SDL_RenderCopy(renderer, miniMenuTexture, nullptr, &miniMenuRect);
 
         if (gameOverMenuActive) {
-            scoreNotificationRect.x = (1881 - scoreNotificationRect.w) / 2;
-            scoreNotificationRect.y = miniMenuRect.y + 300;
-
-            replayButtonRect.x = (1881 - replayButtonRect.w) / 2;
-            replayButtonRect.y = miniMenuRect.y + miniMenuRect.h / 2;
             SDL_RenderCopy(renderer, scoreNotificationTexture, nullptr, &scoreNotificationRect);
             SDL_RenderCopy(renderer, replayButtonHover ? replayButtonHoverTexture : replayButtonTexture, nullptr, &replayButtonRect);
             SDL_RenderCopy(renderer, homeButtonHover ? homeButtonHoverTexture : homeButtonTexture, nullptr, &homeButtonRect);
@@ -512,11 +527,18 @@ void PlayScreen::render(SDL_Renderer* renderer) {
             SDL_RenderCopy(renderer, homeButtonHover ? homeButtonHoverTexture : homeButtonTexture, nullptr, &homeButtonRect);
             SDL_RenderCopy(renderer, returnButtonHover ? returnButtonHoverTexture : returnButtonTexture, nullptr, &returnButtonRect);
             SDL_RenderCopy(renderer, audioButtonHover ? (audioOn ? audioButtonHoverTexture : audioButtonOffHoverTexture) : (audioOn ? audioButtonTexture : audioButtonOffTexture), nullptr, &audioButtonRect);
+
+            // Render nội dung gameplay
+            SDL_RenderCopy(renderer, gameplayTexture, nullptr, &gameplayRect);
         }
     }
 }
 
 void PlayScreen::updateScoreTexture() {
+    if (miniMenuActive) {
+        return; // Ngừng cập nhật điểm số khi mini menu đang hoạt động
+    }
+
     Uint32 currentTime = SDL_GetTicks();
     Uint32 displayTime = elapsedTime;
     if (!isPaused && isRunning) {
