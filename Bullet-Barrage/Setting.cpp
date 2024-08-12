@@ -84,7 +84,7 @@ void Setting::initializeTrackData() {
 
 void Setting::initializeSlider() {
     sliderFrameRect = { 750, 410, 400, 45 };
-    sliderRect = { 755, 415, 0, 35 };
+    sliderRect = { 764, 415, 0, 35 };
     sliderHandleRect = { 750 + 400 - 20, 410, 20, 50 };
 }
 

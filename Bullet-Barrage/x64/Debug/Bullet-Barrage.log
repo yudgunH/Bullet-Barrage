@@ -1,16 +1,3 @@
-﻿  PlayScreen.cpp
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(113,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(114,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(117,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(118,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(199,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(199,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(314,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(315,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(329,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(333,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(333,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(372,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(372,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(453,61): warning C4305: 'argument': truncation from 'double' to 'float'
+﻿  Setting.cpp
+G:\C++\Bullet-Barrage\Bullet-Barrage\Setting.cpp(154,67): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe
