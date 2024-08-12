@@ -1,4 +1,4 @@
-# Bullet Barrage (Pummel Party Minigame)
+# Bullet Barrage (Minigame)
 
 ## About Me
 
