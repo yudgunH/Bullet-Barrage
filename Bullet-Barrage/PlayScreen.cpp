@@ -354,10 +354,10 @@ void PlayScreen::createSinglePattern(float speedMultiplier) {
     bool shootFromLeft = rand() % 2 == 0;
 
     if (shootFromLeft) {
-        startX = 100;
+        startX = 0;
     }
     else {
-        startX = 1700;
+        startX = 1800;
         speed = -speed;
     }
 
@@ -448,7 +448,7 @@ void PlayScreen::update() {
                 break;
 
             case 4:
-                if (currentTime - lastBulletTime >= 2000) {
+                if (currentTime - lastBulletTime >= 3000) {
                     createSpreadPattern(5, 0.5f, 0.3f, 0.5, 100, 100, speedMultiplier);
                     createSpreadPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100, speedMultiplier);
                     lastBulletTime = currentTime;

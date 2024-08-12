@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bullet-Barrage", "Bullet-Barrage\Bullet-Barrage.vcxproj", "{396114E7-248F-43FB-A8E9-90C195FA21A8}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Bullet Barrage", "Bullet Barrage\Bullet Barrage.vdproj", "{9516E987-177E-42D6-BE1E-7A1EDF132F0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{396114E7-248F-43FB-A8E9-90C195FA21A8}.Release|x64.Build.0 = Release|x64
 		{396114E7-248F-43FB-A8E9-90C195FA21A8}.Release|x86.ActiveCfg = Release|Win32
 		{396114E7-248F-43FB-A8E9-90C195FA21A8}.Release|x86.Build.0 = Release|Win32
+		{9516E987-177E-42D6-BE1E-7A1EDF132F0F}.Debug|x64.ActiveCfg = Debug
+		{9516E987-177E-42D6-BE1E-7A1EDF132F0F}.Debug|x86.ActiveCfg = Debug
+		{9516E987-177E-42D6-BE1E-7A1EDF132F0F}.Release|x64.ActiveCfg = Release
+		{9516E987-177E-42D6-BE1E-7A1EDF132F0F}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
