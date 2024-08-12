@@ -224,14 +224,14 @@ void PlayScreen::handleEvent(SDL_Event& e) {
     }
 }
 
-void PlayScreen::createSpreadPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y) {
+void PlayScreen::createSpreadPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y, float speedMultiplier) {
     float angle = angle_;
 
     for (int i = 0; i < numBullets; ++i) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
-        float velX = speed * cos(angle);
-        float velY = speed * sin(angle);
+        float velX = speed * cos(angle) * speedMultiplier;
+        float velY = speed * sin(angle) * speedMultiplier;
 
         newBullet->setPosition(x, y);
         newBullet->setVelocity(velX, velY);
@@ -241,7 +241,7 @@ void PlayScreen::createSpreadPattern(int numBullets, float speed, float angleInc
     }
 }
 
-void PlayScreen::createRoundPattern(int numBullets, float speed) {
+void PlayScreen::createRoundPattern(int numBullets, float speed, float speedMultiplier) {
     float angleIncrement = 360.0f / numBullets; // Góc tăng giữa các viên đạn
     float angle = 0.0f;
 
@@ -249,8 +249,8 @@ void PlayScreen::createRoundPattern(int numBullets, float speed) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
         // Tính toán vận tốc theo hướng vòng tròn
-        float velX = speed * cos(angle * M_PI / 180.0f);
-        float velY = speed * sin(angle * M_PI / 180.0f);
+        float velX = speed * cos(angle * M_PI / 180.0f) * speedMultiplier;
+        float velY = speed * sin(angle * M_PI / 180.0f) * speedMultiplier;
 
         newBullet->setPosition(940, 450); // Vị trí trung tâm (có thể thay đổi nếu cần)
         newBullet->setVelocity(velX, velY); // Đặt vận tốc theo hướng vòng tròn
@@ -260,15 +260,14 @@ void PlayScreen::createRoundPattern(int numBullets, float speed) {
     }
 }
 
-
-void PlayScreen::createSpiralPattern(double x, double y) {
+void PlayScreen::createSpiralPattern(double x, double y, float speedMultiplier) {
     for (int i = 0; i <= 1; ++i) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
         // Tính toán hướng đi của viên đạn
         float radianAngle = (angle + 180.0f * i) * M_PI / 180.0f;
-        float dx = std::cos(radianAngle) * maxSpeed;
-        float dy = std::sin(radianAngle) * maxSpeed;
+        float dx = std::cos(radianAngle) * maxSpeed * speedMultiplier;
+        float dy = std::sin(radianAngle) * maxSpeed * speedMultiplier;
 
         // Thiết lập vị trí và vận tốc cho viên đạn
         newBullet->setPosition(x, y); // Vị trí bắn
@@ -282,7 +281,7 @@ void PlayScreen::createSpiralPattern(double x, double y) {
     }
 }
 
-void PlayScreen::createSinglePattern() {
+void PlayScreen::createSinglePattern(float speedMultiplier) {
     int startX;
     float speed = 1.0f;
 
@@ -313,7 +312,7 @@ void PlayScreen::createSinglePattern() {
         int startY = 700 + j * 50; // Vị trí Y của mỗi viên đạn cách nhau 50 pixel
 
         // Đặt vận tốc với giới hạn
-        float velX = std::min(std::abs(speed), 1.0f) * (speed > 0 ? 1 : -1);
+        float velX = std::min(std::abs(speed), 1.0f) * (speed > 0 ? 1 : -1) * speedMultiplier;
         float velY = 0.0f;
 
         newBullet->setPosition(startX, startY); // Đặt vị trí bắt đầu của đạn
@@ -322,6 +321,7 @@ void PlayScreen::createSinglePattern() {
         bullets.push_back(newBullet);
     }
 }
+
 
 void PlayScreen::startNewPattern() {
     isPatternActive = true;
@@ -344,34 +344,33 @@ void PlayScreen::update() {
         player->updateInvincibility();
         player->move();
 
+        int currentScore = (currentTime - startTime) / 1000;
+        float speedMultiplier = 1.0f + (currentScore / 10) * 0.1f; // Tăng tốc độ 10% mỗi 10 điểm
+
         // Khai báo biến bên ngoài switch để tránh lỗi C2360
         bool allBulletsOffScreen;
 
-        // Kiểm tra nếu không có pattern nào đang hoạt động thì bắt đầu một pattern mới
         if (!isPatternActive) {
             startNewPattern();
         }
         else {
-            // Kiểm tra thời gian tồn tại của loại đạn hiện tại và bắn đạn
             switch (currentPattern) {
             case 1: // Spiral Pattern
-                if (currentTime - lastSpiralBulletTime >= 200) { // Fire bullets every 0.2 seconds
-                    createSpiralPattern(940, 100);
+                if (currentTime - lastSpiralBulletTime >= 200) {
+                    createSpiralPattern(940, 100, speedMultiplier);
                     lastSpiralBulletTime = currentTime;
                 }
-                if (currentTime - startTimeOfCurrentPattern >= 6000) { // Hoạt động trong 6 giây
+                if (currentTime - startTimeOfCurrentPattern >= 6000) {
                     isPatternCompleted = true;
                 }
                 break;
 
             case 2: // Single Pattern
-                // Bắn đạn SinglePattern nếu chưa bắn
                 if (!isPatternCompleted) {
-                    createSinglePattern();
-                    isPatternCompleted = true; // Đánh dấu pattern này là "đã thực hiện"
+                    createSinglePattern(speedMultiplier);
+                    isPatternCompleted = true;
                 }
 
-                // Kiểm tra nếu tất cả các viên đạn của SinglePattern đã ra khỏi màn hình
                 allBulletsOffScreen = true;
                 for (const auto& bullet : bullets) {
                     if (bullet->getXPos() >= 0 && bullet->getXPos() <= 1881 &&
@@ -381,27 +380,27 @@ void PlayScreen::update() {
                     }
                 }
                 if (allBulletsOffScreen) {
-                    isPatternActive = false; // Kết thúc pattern khi đạn đã ra khỏi màn hình
+                    isPatternActive = false;
                 }
                 break;
 
             case 3: // Round Pattern
-                if (currentTime - lastBulletTime >= 1000) { // Fire bullets every 1 second
-                    createRoundPattern(9, 0.3f);
+                if (currentTime - lastBulletTime >= 1000) {
+                    createRoundPattern(9, 0.3f, speedMultiplier);
                     lastBulletTime = currentTime;
                 }
-                if (currentTime - startTimeOfCurrentPattern >= 6000) { // Hoạt động trong 6 giây
+                if (currentTime - startTimeOfCurrentPattern >= 6000) {
                     isPatternCompleted = true;
                 }
                 break;
 
             case 4: // Spread Pattern
-                if (currentTime - lastBulletTime >= 2000) { // Fire bullets every 2 seconds
-                    createSpreadPattern(5, 0.5f, 0.3f, 0.5, 100, 100);
-                    createSpreadPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100);
+                if (currentTime - lastBulletTime >= 2000) {
+                    createSpreadPattern(5, 0.5f, 0.3f, 0.5, 100, 100, speedMultiplier);
+                    createSpreadPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100, speedMultiplier);
                     lastBulletTime = currentTime;
                 }
-                if (currentTime - startTimeOfCurrentPattern >= 5000) { // Hoạt động trong 5 giây
+                if (currentTime - startTimeOfCurrentPattern >= 5000) {
                     isPatternCompleted = true;
                 }
                 break;
@@ -409,11 +408,10 @@ void PlayScreen::update() {
 
             if (isPatternCompleted && currentPattern != 2) {
                 isPatternActive = false;
-                bullets.clear(); // Xóa tất cả đạn khi pattern kết thúc
+                bullets.clear();
             }
         }
 
-        // Cập nhật tất cả các viên đạn
         for (auto it = bullets.begin(); it != bullets.end();) {
             (*it)->update();
 

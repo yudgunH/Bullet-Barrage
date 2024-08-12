@@ -92,10 +92,10 @@ private:
     void initRects();
     void resetThreats();
     void handleCollisions();
-    void createSpreadPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y);
-    void createRoundPattern(int numBullets, float speed);
-    void createSpiralPattern(double x, double y);
-    void createSinglePattern();
+    void createSpreadPattern(int numBullets, float speed, float angleIncrement, float angle_, float x, float y, float speedMultiplier);
+    void createRoundPattern(int numBullets, float speed, float speedMultiplier);
+    void createSpiralPattern(double x, double y, float speedMultiplier);
+    void createSinglePattern(float speedMultiplier);
     void startNewPattern(); // Hàm để bắt đầu pattern mới
 };
 

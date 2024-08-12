@@ -9,10 +9,12 @@ G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(160,52): warning C4244: 'arg
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(160,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(252,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(253,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(269,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(274,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(274,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(319,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(319,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(401,61): warning C4305: 'argument': truncation from 'double' to 'float'
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(268,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(273,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(273,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(318,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(318,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(400,61): warning C4305: 'argument': truncation from 'double' to 'float'
+  main.cpp
+  Generating Code...
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe
