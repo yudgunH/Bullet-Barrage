@@ -6,8 +6,8 @@
 
 PlayScreen::PlayScreen(SDL_Renderer* renderer, int* screen, Setting* setting, Score* score)
     : renderer(renderer), currentScreen(screen), setting(setting), score(score), lastBulletTime(0),
-    isPaused(false), isRunning(false), menuButtonHover(false), miniMenuActive(false),
-    homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), audioOn(true), previousVolume(50),
+    isPaused(false), isRunning(false), menuButtonHover(false), miniMenuActive(false), gameOverMenuActive(false),
+    homeButtonHover(false), returnButtonHover(false), audioButtonHover(false), replayButtonHover(false), audioOn(true), previousVolume(50),
     startTimeOfCurrentPattern(0), currentPattern(0), isPatternActive(false), isPatternCompleted(false) {
 
     player = new Player(renderer, "../assets/img/character");
@@ -42,6 +42,9 @@ PlayScreen::~PlayScreen() {
     SDL_DestroyTexture(scoreTexture);
     SDL_DestroyTexture(heartFullTexture);
     SDL_DestroyTexture(heartEmptyTexture);
+    SDL_DestroyTexture(replayButtonTexture);
+    SDL_DestroyTexture(replayButtonHoverTexture);
+    SDL_DestroyTexture(scoreNotificationTexture);
 
     for (auto& bullet : bullets) {
         delete bullet;
@@ -62,6 +65,25 @@ void PlayScreen::loadTextures() {
     audioButtonOffHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Small_Blank_AudioOff.png");
     heartFullTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Large_HeartFull.png");
     heartEmptyTexture = IMG_LoadTexture(renderer, "../assets/img/UI/Icon_Large_HeartEmpty.png");
+    replayButtonTexture = IMG_LoadTexture(renderer, "../assets/img/UI/PremadeButtons_Replay.png");
+    replayButtonHoverTexture = IMG_LoadTexture(renderer, "../assets/img/UI/PremadeButtons_Replay_Hover.png");
+
+    // Tải thêm texture cho thông báo điểm số
+    TTF_Init();
+    TTF_Font* font = TTF_OpenFont("../assets/fonts/PressStart2P-Regular.ttf", 48);
+    SDL_Color textColor = { 0, 0, 0, 255 };
+    scoreNotificationTexture = nullptr;
+    scoreNotificationRect = { 0, 0, 0, 0 };
+    if (font) {
+        std::string scoreMessage = "Your Score: " + std::to_string(lastScore);
+        SDL_Surface* textSurface = TTF_RenderText_Solid(font, scoreMessage.c_str(), textColor);
+        if (textSurface) {
+            scoreNotificationTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+            scoreNotificationRect = { (1881 - textSurface->w) / 2, (918 - textSurface->h) / 4, textSurface->w, textSurface->h };
+            SDL_FreeSurface(textSurface);
+        }
+        TTF_CloseFont(font);
+    }
 }
 
 void PlayScreen::initRects() {
@@ -95,8 +117,8 @@ void PlayScreen::initRects() {
     homeButtonRect = { miniMenuRect.x + buttonSpacing, miniMenuRect.y + miniMenuRect.h - buttonHeight - 50, buttonWidth, buttonHeight };
     returnButtonRect = { homeButtonRect.x + buttonWidth + buttonSpacing, homeButtonRect.y, buttonWidth, buttonHeight };
     audioButtonRect = { returnButtonRect.x + buttonWidth + buttonSpacing, returnButtonRect.y, buttonWidth, buttonHeight };
+    replayButtonRect = { (1881 - buttonWidth) / 2, miniMenuRect.y + miniMenuRect.h / 2, buttonWidth, buttonHeight };
 
-    TTF_Init();
     scoreRect = { menuButtonRect.x - 100, menuButtonRect.y, 90, 50 };
 }
 
@@ -131,26 +153,25 @@ void PlayScreen::reset() {
     isPaused = false;
     isRunning = false;
     miniMenuActive = false;
+    gameOverMenuActive = false;
     menuButtonHover = false;
     homeButtonHover = false;
     returnButtonHover = false;
+    replayButtonHover = false;
     audioButtonHover = false;
     audioOn = true;
     updateScoreTexture();
 
-    // Reset player và background
     player->reset();
     background->reset();
 
-    // Xóa tất cả các viên đạn hiện tại
     for (auto& bullet : bullets) {
         delete bullet;
     }
     bullets.clear();
 
-    resetThreats(); // Thiết lập lại vị trí của các threat như ban đầu
+    resetThreats();
 }
-
 
 void PlayScreen::resetThreats() {
     int screenWidth = 1881;
@@ -161,42 +182,66 @@ void PlayScreen::resetThreats() {
 
 void PlayScreen::handleEvent(SDL_Event& e) {
     if (miniMenuActive) {
-        if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
-            miniMenuActive = false;
-            resume();
+        if (gameOverMenuActive) {
+            if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+
+                homeButtonHover = (x > homeButtonRect.x && x < homeButtonRect.x + homeButtonRect.w &&
+                    y > homeButtonRect.y && y < homeButtonRect.y + homeButtonRect.h);
+
+                replayButtonHover = (x > replayButtonRect.x && x < replayButtonRect.x + replayButtonRect.w &&
+                    y > replayButtonRect.y && y < replayButtonRect.y + replayButtonRect.h);
+
+                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                    if (homeButtonHover) {
+                        *currentScreen = MENU;
+                        reset();
+                    }
+                    else if (replayButtonHover) {
+                        reset();
+                        *currentScreen = GAME;
+                    }
+                }
+            }
         }
+        else {
+            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+                miniMenuActive = false;
+                resume();
+            }
 
-        if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
-            int x, y;
-            SDL_GetMouseState(&x, &y);
+            if (e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN) {
+                int x, y;
+                SDL_GetMouseState(&x, &y);
 
-            homeButtonHover = (x > homeButtonRect.x && x < homeButtonRect.x + homeButtonRect.w &&
-                y > homeButtonRect.y && y < homeButtonRect.y + homeButtonRect.h);
-            returnButtonHover = (x > returnButtonRect.x && x < returnButtonRect.x + returnButtonRect.w &&
-                y > returnButtonRect.y && y < returnButtonRect.y + returnButtonRect.h);
-            audioButtonHover = (x > audioButtonRect.x && x < audioButtonRect.x + audioButtonRect.w &&
-                y > audioButtonRect.y && y < audioButtonRect.y + audioButtonRect.h);
+                homeButtonHover = (x > homeButtonRect.x && x < homeButtonRect.x + homeButtonRect.w &&
+                    y > homeButtonRect.y && y < homeButtonRect.y + homeButtonRect.h);
+                returnButtonHover = (x > returnButtonRect.x && x < returnButtonRect.x + returnButtonRect.w &&
+                    y > returnButtonRect.y && y < returnButtonRect.y + returnButtonRect.h);
+                audioButtonHover = (x > audioButtonRect.x && x < audioButtonRect.x + audioButtonRect.w &&
+                    y > audioButtonRect.y && y < audioButtonRect.y + audioButtonRect.h);
 
-            if (e.type == SDL_MOUSEBUTTONDOWN) {
-                if (homeButtonHover) {
-                    *currentScreen = MENU;
-                    miniMenuActive = false;
-                    score->addScore(elapsedTime);
-                    reset();
-                }
-                else if (returnButtonHover) {
-                    miniMenuActive = false;
-                    resume();
-                }
-                else if (audioButtonHover) {
-                    if (audioOn) {
-                        previousVolume = setting->getVolume();
-                        setting->setVolume(0);
+                if (e.type == SDL_MOUSEBUTTONDOWN) {
+                    if (homeButtonHover) {
+                        *currentScreen = MENU;
+                        miniMenuActive = false;
+                        reset();
                     }
-                    else {
-                        setting->setVolume(previousVolume);
+                    else if (returnButtonHover) {
+                        miniMenuActive = false;
+                        resume();
                     }
-                    audioOn = !audioOn;
+                    else if (audioButtonHover) {
+                        if (audioOn) {
+                            previousVolume = setting->getVolume();
+                            setting->setVolume(0);
+                        }
+                        else {
+                            setting->setVolume(previousVolume);
+                        }
+                        audioOn = !audioOn;
+                    }
                 }
             }
         }
@@ -247,15 +292,14 @@ void PlayScreen::createRoundPattern(int numBullets, float speed, float speedMult
     for (int i = 0; i < numBullets; ++i) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
-        // Tính toán vận tốc theo hướng vòng tròn
         float velX = speed * cos(angle * M_PI / 180.0f) * speedMultiplier;
         float velY = speed * sin(angle * M_PI / 180.0f) * speedMultiplier;
 
-        newBullet->setPosition(940, 450); // Vị trí trung tâm (có thể thay đổi nếu cần)
-        newBullet->setVelocity(velX, velY); // Đặt vận tốc theo hướng vòng tròn
+        newBullet->setPosition(940, 450);
+        newBullet->setVelocity(velX, velY);
         bullets.push_back(newBullet);
 
-        angle += angleIncrement; // Tăng góc để bắn viên đạn tiếp theo theo hướng khác
+        angle += angleIncrement;
     }
 }
 
@@ -263,13 +307,11 @@ void PlayScreen::createSpiralPattern(double x, double y, float speedMultiplier) 
     for (int i = 0; i <= 1; ++i) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
-        // Tính toán hướng đi của viên đạn
         float radianAngle = (angle + 180.0f * i) * M_PI / 180.0f;
         float dx = std::cos(radianAngle) * maxSpeed * speedMultiplier;
         float dy = std::sin(radianAngle) * maxSpeed * speedMultiplier;
 
-        // Thiết lập vị trí và vận tốc cho viên đạn
-        newBullet->setPosition(x, y); // Vị trí bắn
+        newBullet->setPosition(x, y);
         newBullet->setVelocity(dx, dy);
         bullets.push_back(newBullet);
 
@@ -284,55 +326,47 @@ void PlayScreen::createSinglePattern(float speedMultiplier) {
     int startX;
     float speed = 1.0f;
 
-    // Seed cho hàm rand, chỉ cần thực hiện một lần khi chương trình khởi động
     static bool seeded = false;
     if (!seeded) {
         srand(static_cast<unsigned int>(time(0)));
         seeded = true;
     }
 
-    // Random chọn bên bắn (0 hoặc 1)
     bool shootFromLeft = rand() % 2 == 0;
 
     if (shootFromLeft) {
-        // Bắn từ trái
         startX = 100;
     }
     else {
-        // Bắn từ phải
         startX = 1700;
-        speed = -speed; // Đảo chiều tốc độ để bắn từ phải sang trái
+        speed = -speed;
     }
 
-    // Bắn 3 viên đạn xếp thành hàng dọc
     for (int j = 0; j < 3; ++j) {
         Threat* newBullet = new Threat(renderer, "bullet.png", Threat::ThreatType::BULLET);
 
-        int startY = 700 + j * 50; // Vị trí Y của mỗi viên đạn cách nhau 50 pixel
+        int startY = 700 + j * 50;
 
-        // Đặt vận tốc với giới hạn
         float velX = std::min(std::abs(speed), 1.0f) * (speed > 0 ? 1 : -1) * speedMultiplier;
         float velY = 0.0f;
 
-        newBullet->setPosition(startX, startY); // Đặt vị trí bắt đầu của đạn
-        newBullet->setVelocity(velX, velY); // Đặt vận tốc của đạn
+        newBullet->setPosition(startX, startY);
+        newBullet->setVelocity(velX, velY);
 
         bullets.push_back(newBullet);
     }
 }
-
 
 void PlayScreen::startNewPattern() {
     isPatternActive = true;
     isPatternCompleted = false;
     startTimeOfCurrentPattern = SDL_GetTicks();
 
-    int previousPattern = currentPattern; // Lưu trữ pattern trước đó
+    int previousPattern = currentPattern;
     do {
-        currentPattern = rand() % 4 + 1; // Số ngẫu nhiên từ 1 đến 4
-    } while (currentPattern == previousPattern); // Đảm bảo không chọn cùng một pattern
+        currentPattern = rand() % 4 + 1;
+    } while (currentPattern == previousPattern);
 
-    // In ra giá trị của currentPattern để kiểm tra
     std::cout << "Current Pattern: " << currentPattern << std::endl;
 }
 
@@ -344,9 +378,9 @@ void PlayScreen::update() {
         player->move();
 
         int currentScore = (currentTime - startTime) / 1000;
-        float speedMultiplier = 1.0f + (currentScore / 10) * 0.1f; // Tăng tốc độ 10% mỗi 10 điểm
+        lastScore = currentScore; // Cập nhật điểm số hiện tại vào biến lastScore
+        float speedMultiplier = 1.0f + (currentScore / 10) * 0.1f;
 
-        // Khai báo biến bên ngoài switch để tránh lỗi C2360
         bool allBulletsOffScreen;
 
         if (!isPatternActive) {
@@ -354,7 +388,7 @@ void PlayScreen::update() {
         }
         else {
             switch (currentPattern) {
-            case 1: // Spiral Pattern
+            case 1:
                 if (currentTime - lastSpiralBulletTime >= 200) {
                     createSpiralPattern(940, 100, speedMultiplier);
                     lastSpiralBulletTime = currentTime;
@@ -364,7 +398,7 @@ void PlayScreen::update() {
                 }
                 break;
 
-            case 2: // Single Pattern
+            case 2:
                 if (!isPatternCompleted) {
                     createSinglePattern(speedMultiplier);
                     isPatternCompleted = true;
@@ -383,7 +417,7 @@ void PlayScreen::update() {
                 }
                 break;
 
-            case 3: // Round Pattern
+            case 3:
                 if (currentTime - lastBulletTime >= 1000) {
                     createRoundPattern(9, 0.3f, speedMultiplier);
                     lastBulletTime = currentTime;
@@ -393,7 +427,7 @@ void PlayScreen::update() {
                 }
                 break;
 
-            case 4: // Spread Pattern
+            case 4:
                 if (currentTime - lastBulletTime >= 2000) {
                     createSpreadPattern(5, 0.5f, 0.3f, 0.5, 100, 100, speedMultiplier);
                     createSpreadPattern(5, 0.5f, 0.3f, M_PI / 2, 1500, 100, speedMultiplier);
@@ -426,16 +460,17 @@ void PlayScreen::update() {
         if (player->getHealth() <= 0) {
             score->addScore(currentScore);
             score->saveScores("scores.txt");
-            *currentScreen = MENU;
-            miniMenuActive = false;
-            reset();// Chuyển về màn hình menu hoặc điểm số
+            miniMenuActive = true;
+            gameOverMenuActive = true;
+            isRunning = false;
+            loadTextures(); // Tải lại texture để cập nhật thông báo điểm số
         }
+
         handleCollisions();
     }
 
     updateScoreTexture();
 }
-
 
 void PlayScreen::render(SDL_Renderer* renderer) {
     background->render(renderer);
@@ -463,9 +498,21 @@ void PlayScreen::render(SDL_Renderer* renderer) {
     if (miniMenuActive) {
         SDL_RenderCopy(renderer, miniMenuTexture, nullptr, &miniMenuRect);
 
-        SDL_RenderCopy(renderer, homeButtonHover ? homeButtonHoverTexture : homeButtonTexture, nullptr, &homeButtonRect);
-        SDL_RenderCopy(renderer, returnButtonHover ? returnButtonHoverTexture : returnButtonTexture, nullptr, &returnButtonRect);
-        SDL_RenderCopy(renderer, audioButtonHover ? (audioOn ? audioButtonHoverTexture : audioButtonOffHoverTexture) : (audioOn ? audioButtonTexture : audioButtonOffTexture), nullptr, &audioButtonRect);
+        if (gameOverMenuActive) {
+            scoreNotificationRect.x = (1881 - scoreNotificationRect.w) / 2;
+            scoreNotificationRect.y = miniMenuRect.y + 300;
+
+            replayButtonRect.x = (1881 - replayButtonRect.w) / 2;
+            replayButtonRect.y = miniMenuRect.y + miniMenuRect.h / 2;
+            SDL_RenderCopy(renderer, scoreNotificationTexture, nullptr, &scoreNotificationRect);
+            SDL_RenderCopy(renderer, replayButtonHover ? replayButtonHoverTexture : replayButtonTexture, nullptr, &replayButtonRect);
+            SDL_RenderCopy(renderer, homeButtonHover ? homeButtonHoverTexture : homeButtonTexture, nullptr, &homeButtonRect);
+        }
+        else {
+            SDL_RenderCopy(renderer, homeButtonHover ? homeButtonHoverTexture : homeButtonTexture, nullptr, &homeButtonRect);
+            SDL_RenderCopy(renderer, returnButtonHover ? returnButtonHoverTexture : returnButtonTexture, nullptr, &returnButtonRect);
+            SDL_RenderCopy(renderer, audioButtonHover ? (audioOn ? audioButtonHoverTexture : audioButtonOffHoverTexture) : (audioOn ? audioButtonTexture : audioButtonOffTexture), nullptr, &audioButtonRect);
+        }
     }
 }
 
@@ -507,7 +554,6 @@ void PlayScreen::handleCollisions() {
         SDL_Rect bulletRect = { static_cast<int>(bullet->getXPos()), static_cast<int>(bullet->getYPos()), bullet->getWidth(), bullet->getHeight() };
         if (Collision::checkCollision(playerRect, bulletRect)) {
             player->reduceHealth();
-            
         }
     }
 }

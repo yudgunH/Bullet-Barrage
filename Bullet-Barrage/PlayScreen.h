@@ -48,19 +48,32 @@ private:
     SDL_Texture* audioButtonOffHoverTexture;
     SDL_Texture* heartFullTexture;
     SDL_Texture* heartEmptyTexture;
+    SDL_Texture* replayButtonTexture;
+    SDL_Texture* replayButtonHoverTexture;
+
+    // Thêm các biến cho thông báo điểm số
+    SDL_Texture* scoreNotificationTexture;
+    SDL_Rect scoreNotificationRect;
+    int lastScore; // Biến lưu điểm số cuối cùng khi trò chơi kết thúc
+
     SDL_Rect heartRects[3];
     SDL_Rect menuButtonRect;
     SDL_Rect miniMenuRect;
     SDL_Rect homeButtonRect;
     SDL_Rect returnButtonRect;
     SDL_Rect audioButtonRect;
+    SDL_Rect replayButtonRect;
+
     bool menuButtonHover;
     bool miniMenuActive;
+    bool gameOverMenuActive;
     bool homeButtonHover;
     bool returnButtonHover;
     bool audioButtonHover;
+    bool replayButtonHover;
     bool audioOn;
     int previousVolume;
+
     Setting* setting;
     int* currentScreen;
 

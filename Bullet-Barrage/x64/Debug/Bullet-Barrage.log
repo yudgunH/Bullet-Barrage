@@ -1,2 +1,16 @@
-﻿  main.cpp
+﻿  PlayScreen.cpp
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(95,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(96,19): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(99,25): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(100,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(180,54): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(180,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(295,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(296,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(310,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(314,35): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(314,32): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(353,40): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(353,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+G:\C++\Bullet-Barrage\Bullet-Barrage\PlayScreen.cpp(433,61): warning C4305: 'argument': truncation from 'double' to 'float'
   Bullet-Barrage.vcxproj -> G:\C++\Bullet-Barrage\x64\Debug\Bullet-Barrage.exe
