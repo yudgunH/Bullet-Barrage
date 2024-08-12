@@ -37,7 +37,8 @@ Khi chọn Play, chúng ta sẽ đến với màn chơi chính. Nơi nhân vật
 -    Replay <img src="https://github.com/user-attachments/assets/f14b81a5-d871-4ebc-bbdd-3174ba50d479" width="30" height="30">: Bấm để chơi lại sau khi đã thua.
 -    Bật/tắt âm thanh<img src="https://github.com/user-attachments/assets/a7f701a8-c989-4c2e-9653-b111a18773b0" width="30" height="30"> <img src="https://github.com/user-attachments/assets/13c7e797-6f29-4f3d-94c8-2141c4bb6633" width="30" height="30"> 
 -    Máu của nhân vật <img src="https://github.com/user-attachments/assets/4b7ddfe2-30b3-40b8-bffd-181770a7f0c2" width="30" height="30"> : Lượng máu nhân vật còn lại.
--    Viên đạn <img src="https://github.com/user-attachments/assets/63c1c260-ab12-43c6-accf-ec8eb6814a5d" width="30" height="30"> : Viên đạn mà nhân vật cần né tránh
+-    Viên đạn <img src="https://github.com/user-attachments/assets/3f1a66df-0205-4af0-886b-885bfb91bef0" width="30" height="30"> : Viên đạn mà nhân vật cần né tránh
+
 
 
 ## Cấu trúc game
