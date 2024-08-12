@@ -85,6 +85,9 @@ int main(int argc, char* args[]) {
                     }
                     break;
                 case SCORE:
+                    score.loadScores(scoreFile);
+                    scoreScreen.updateScoreTexture(renderer);
+                    scoreScreen.render(renderer);
                     scoreScreen.handleEvent(e, &currentScreen);
                     break;
                 }

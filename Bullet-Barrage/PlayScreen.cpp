@@ -157,7 +157,6 @@ void PlayScreen::resetThreats() {
     int screenHeight = 918;
 
     bullet->setPosition(rand() % screenWidth, rand() % screenHeight);
-    boom->setPosition(rand() % screenWidth, rand() % screenHeight);
 }
 
 void PlayScreen::handleEvent(SDL_Event& e) {
@@ -424,7 +423,13 @@ void PlayScreen::update() {
             }
         }
 
-        boom->update();
+        if (player->getHealth() <= 0) {
+            score->addScore(currentScore);
+            score->saveScores("scores.txt");
+            *currentScreen = MENU;
+            miniMenuActive = false;
+            reset();// Chuyển về màn hình menu hoặc điểm số
+        }
         handleCollisions();
     }
 
@@ -502,9 +507,7 @@ void PlayScreen::handleCollisions() {
         SDL_Rect bulletRect = { static_cast<int>(bullet->getXPos()), static_cast<int>(bullet->getYPos()), bullet->getWidth(), bullet->getHeight() };
         if (Collision::checkCollision(playerRect, bulletRect)) {
             player->reduceHealth();
-            if (player->getHealth() <= 0) {
-                player->reset();
-            }
+            
         }
     }
 }
