@@ -30,12 +30,12 @@ Khi chọn Play, chúng ta sẽ đến với màn chơi chính. Nơi nhân vật
 
 ## Các thành phần trong game
 
--    Apple <img src="AppleWorm/preview/Apple.png" width="30" height="30"> : Con sâu ăn apple giúp nó dài ra
+-    Nhân vật chính <img src="https://github.com/user-attachments/assets/420b41b7-1c12-4d56-a217-a3d0a98b3bf6" width="60" height="30"> : Nhân vật chính của game.
 -    Pause  <img src="https://github.com/user-attachments/assets/ae77960a-9b8d-4324-888a-2af1a2199501" width="30" height="30"> : Bấm để tạm dừng và thực hiện các điều chỉnh thông số.   
 -    Home <img src="https://github.com/user-attachments/assets/f1699fc6-6e0d-48ae-b33a-586d39694f8a" width="30" height="30"> : Bấm để trở về màn hình chính.
 -    Resume <img src="https://github.com/user-attachments/assets/b08332a9-49b6-4ca5-bb75-3f3d6361dc4a" width="30" height="30"> : Bấm để tiếp tục chơi khi đang pause.
 -    Replay <img src="https://github.com/user-attachments/assets/f14b81a5-d871-4ebc-bbdd-3174ba50d479" width="30" height="30">: Bấm để chơi lại sau khi đã thua.
--    Bật/tắt âm thanh Bật/tắt âm thanh <img src="https://github.com/user-attachments/assets/a7f701a8-c989-4c2e-9653-b111a18773b0" width="30" height="30"> <img src="[https://github.com/user-attachments/assets/a7f701a8-c989-4c2e-9653-b111a18773b0](https://github.com/user-attachments/assets/13c7e797-6f29-4f3d-94c8-2141c4bb6633)" width="30" height="30"> 
+-    Bật/tắt âm thanh<img src="https://github.com/user-attachments/assets/a7f701a8-c989-4c2e-9653-b111a18773b0" width="30" height="30"> <img src="https://github.com/user-attachments/assets/13c7e797-6f29-4f3d-94c8-2141c4bb6633" width="30" height="30"> 
 -    Máu của nhân vật <img src="https://github.com/user-attachments/assets/4b7ddfe2-30b3-40b8-bffd-181770a7f0c2" width="30" height="30"> : Lượng máu nhân vật còn lại.
 
 
