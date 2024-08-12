@@ -1,27 +1,39 @@
 # Bullet Barrage (Minigame)
 
-## About Me
+## Thông tin
 
 - **Full Name:** Nguyễn Duy Hưng
 - **Student ID:** 22028264
 - **Course:** 2324H_INT2215_70
 
-## Game Introduction
+## Giới thiệu game
 
 **Bullet Barrage** là một minigame, nơi người chơi phải né tránh các làn đạn được bắn ra từ mọi hướng. Mục tiêu của trò chơi là sống sót lâu nhất có thể bằng cách di chuyển để tránh bị trúng đạn.
 
-## How to Play
+## Cách để chơi
 
 1. **Starting the Game:** Trò chơi bắt đầu khi các viên đạn được bắn ra từ các cạnh của đấu trường. Người chơi sử dụng các phím điều khiển để di chuyển nhân vật và né tránh đạn.
 2. **Controlling the Character:** Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải.
 3. **Winning the Game:** Trò chơi kết thúc khi người chơi hết 3 máu.
 4. **Strategy:** Duy trì sự di chuyển liên tục và tìm kiếm các khoảng trống giữa các làn đạn để có thể sống sót lâu nhất.
 
-## A few images of the game
+## Bắt đầu game
 
-[Include screenshots or visuals of the game here]
+Khi bắt đầu, chúng ta sẽ xuất phát với màn hình Menu. 
+![image](https://github.com/user-attachments/assets/3be2d124-382c-4ca3-8bab-a29c9a0e2631)
+Khi chọn Setting, chúng ta được điều chỉnh âm lượng và thay đổi nhạc nền. 
+![image](https://github.com/user-attachments/assets/adff53cc-8c24-4d76-8d73-8c6d3f402fd6)
+Khi chọn Score, chúng ta được xem top 10 điểm số cao nhất mà người chơi từng đạt được.
+![image](https://github.com/user-attachments/assets/1cdb8628-5a0a-4335-9aec-ea44603370fd)
+Khi chọn Play, chúng ta sẽ đến với màn chơi chính. Nơi nhân vật phải né toàn bộ những viên đạn bắn ra từ mọi phía để có thể sống sót.
+![image](https://github.com/user-attachments/assets/892e684e-a02c-43fa-9c82-19dd82963842)
 
-## Game Structure
+## Các thành phần trong game
+
+
+
+
+## Cấu trúc game
 
 Cấu trúc của trò chơi **Bullet Barrage** được tổ chức như sau:
 
@@ -56,7 +68,7 @@ Cấu trúc của trò chơi **Bullet Barrage** được tổ chức như sau:
 - **`ScoreScreen.cpp & ScoreScreen.h`**: Hiển thị bảng điểm cao và xử lý các sự kiện liên quan đến màn hình điểm số. Cho phép người chơi quay lại menu chính từ màn hình này.
 
 
-## Installation Instructions
+## Cách tải game
 
 1. **Download**: Tải tệp trò chơi về máy tính của bạn.
 2. **Extract**: Giải nén nội dung của tệp.
