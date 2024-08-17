@@ -12,15 +12,42 @@
 
 ## Cách để chơi
 
-1. **Starting the Game:** Trò chơi bắt đầu khi các viên đạn được bắn ra từ các cạnh của đấu trường. Người chơi sử dụng các phím điều khiển để di chuyển nhân vật và né tránh đạn.
-2. **Controlling the Character:** Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải.
-3. **Winning the Game:** Trò chơi kết thúc khi người chơi hết 3 máu.
-4. **Strategy:** Duy trì sự di chuyển liên tục và tìm kiếm các khoảng trống giữa các làn đạn để có thể sống sót lâu nhất.
+1. **Bắt đầu chơi:** Trò chơi bắt đầu khi các viên đạn được bắn ra từ các cạnh của đấu trường. Người chơi sử dụng các phím điều khiển để di chuyển nhân vật và né tránh đạn.
+2. **Điều khiển nhân vật:** Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải.
+3. **Kết thúc trò chơi:** Trò chơi kết thúc khi người chơi hết 3 máu.
+4. **Mẹo hữu ích:** Duy trì sự di chuyển liên tục và tìm kiếm các khoảng trống giữa các làn đạn để có thể sống sót lâu nhất.
+5. **Những loại đạn:**
+
+<table>
+  <tr>
+    <td><img src="assets/gif/round.gif" width="100"/></td>
+    <td>Đạn vòng tròn</td>
+    <td>Những viên đạn toả ra theo hình tròn.</td>
+  </tr>
+  <tr>
+    <td><img src="assets/gif/single.gif" width="100"/></td>
+    <td>Đạn đơn</td>
+    <td>Ba viên bắn theo phương ngang với tốc độ cực nhanh từ phía bất kì.</td>
+  </tr>
+  <tr>
+    <td><img src="assets/gif/spiral.gif" width="100"/></td>
+    <td>Đạn xoắn</td>
+    <td>Những viên đạn toả ra theo kiểu xoắn ốc.</td>
+  </tr>
+  <tr>
+    <td><img src="assets/gif/spread.gif" width="100"/></td>
+    <td>Đạn toả</td>
+    <td>Những viên đạn toả ra theo hình nón.</td>
+  </tr>
+</table>
+
+
+
 
 ## Bắt đầu game
 
 Khi bắt đầu, chúng ta sẽ xuất phát với màn hình Menu. 
-![image](https://github.com/user-attachments/assets/3be2d124-382c-4ca3-8bab-a29c9a0e2631)
+![image](assets/gif/menu.gif)
 Khi chọn Setting, chúng ta được điều chỉnh âm lượng và thay đổi nhạc nền. 
 ![image](https://github.com/user-attachments/assets/adff53cc-8c24-4d76-8d73-8c6d3f402fd6)
 Khi chọn Score, chúng ta được xem top 10 điểm số cao nhất mà người chơi từng đạt được.
