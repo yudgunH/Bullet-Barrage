@@ -1,5 +1,8 @@
 # Bullet Barrage (Minigame)
 
+- **Giới thiệu game:** https://youtu.be/-rurGAphFeQ?si=AvBmSESGc3_YIoqR
+- **Trải nghiệm game:** https://youtu.be/-xDHRhAl69U?si=EBzf9lO-LOrxxUrS
+
 ## Thông tin
 
 - **Full Name:** Nguyễn Duy Hưng
