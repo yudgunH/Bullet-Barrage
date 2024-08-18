@@ -42,11 +42,19 @@
 
 ## Cách để chơi
 
-1. **Bắt đầu chơi:** Trò chơi bắt đầu khi các viên đạn được bắn ra từ các cạnh của đấu trường. Người chơi sử dụng các phím điều khiển để di chuyển nhân vật và né tránh đạn.
-2. **Điều khiển nhân vật:** Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải.
-3. **Kết thúc trò chơi:** Trò chơi kết thúc khi người chơi hết 3 máu.
-4. **Mẹo hữu ích:** Duy trì sự di chuyển liên tục và tìm kiếm các khoảng trống giữa các làn đạn để có thể sống sót lâu nhất.
-5. **Những loại đạn:**
+### 1. Bắt đầu chơi
+Trò chơi bắt đầu khi các viên đạn được bắn ra từ các cạnh của đấu trường. Người chơi sử dụng các phím điều khiển để di chuyển nhân vật và né tránh đạn.
+
+### 2. Điều khiển nhân vật
+Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải.
+
+### 3. Kết thúc trò chơi
+Trò chơi kết thúc khi người chơi hết 3 máu.
+
+### 4. Mẹo hữu ích
+Duy trì sự di chuyển liên tục và tìm kiếm các khoảng trống giữa các làn đạn để có thể sống sót lâu nhất.
+
+### 5. Những loại đạn
 
 <table>
   <tr>
