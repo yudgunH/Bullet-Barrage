@@ -2,7 +2,6 @@
 #include <iostream>
 
 Score::Score() {
-    // Constructor body can be empty as no initialization is required.
 }
 
 void Score::addScore(int newScore) {

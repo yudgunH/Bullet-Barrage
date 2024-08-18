@@ -76,11 +76,10 @@ void ScoreScreen::updateScoreTexture(SDL_Renderer* renderer) {
         }
     }
 
-    // Set custom positions for scores
-    int leftX = 450;  // New X position for left column
-    int rightX = 1000; // New X position for right column
-    int startY = 350; // New starting Y position
-    int yIncrement = 60; // New Y increment between scores
+    int leftX = 450;  
+    int rightX = 1000;
+    int startY = 350; 
+    int yIncrement = 60; 
 
     for (size_t i = 0; i < topScores.size(); ++i) {
         scoreText = std::to_string(i + 1) + ". " + std::to_string(topScores[i]);
@@ -101,7 +100,6 @@ void ScoreScreen::updateScoreTexture(SDL_Renderer* renderer) {
 void ScoreScreen::render(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, backgroundTexture, NULL, NULL);
 
-    // Render scores
     for (int i = 0; i < 10; ++i) {
         if (scoreTextures[i]) {
             SDL_RenderCopy(renderer, scoreTextures[i], NULL, &scoreRects[i]);

@@ -397,7 +397,7 @@ void PlayScreen::update() {
         player->move();
 
         int currentScore = (currentTime - startTime) / 1000;
-        lastScore = currentScore; // Cập nhật điểm số hiện tại vào biến lastScore
+        lastScore = currentScore; 
         float speedMultiplier = 1.0f + (currentScore / 10) * 0.1f;
 
         bool allBulletsOffScreen;
@@ -526,7 +526,6 @@ void PlayScreen::render(SDL_Renderer* renderer) {
             SDL_RenderCopy(renderer, returnButtonHover ? returnButtonHoverTexture : returnButtonTexture, nullptr, &returnButtonRect);
             SDL_RenderCopy(renderer, audioButtonHover ? (audioOn ? audioButtonHoverTexture : audioButtonOffHoverTexture) : (audioOn ? audioButtonTexture : audioButtonOffTexture), nullptr, &audioButtonRect);
 
-            // Render nội dung gameplay
             SDL_RenderCopy(renderer, gameplayTexture, nullptr, &gameplayRect);
         }
     }
@@ -534,7 +533,7 @@ void PlayScreen::render(SDL_Renderer* renderer) {
 
 void PlayScreen::updateScoreTexture() {
     if (miniMenuActive) {
-        return; // Ngừng cập nhật điểm số khi mini menu đang hoạt động
+        return; 
     }
 
     Uint32 currentTime = SDL_GetTicks();

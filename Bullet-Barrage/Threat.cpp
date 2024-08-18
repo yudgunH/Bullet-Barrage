@@ -47,7 +47,6 @@ void Threat::update() {
     x_pos += velX;
     y_pos += velY;
 
-    // Update animation frame
     Uint32 currentTime = SDL_GetTicks();
     if (currentTime > lastFrameTime + frameDelay) {
         currentFrame = (currentFrame + 1) % frameCount;
