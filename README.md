@@ -160,20 +160,16 @@ Cấu trúc của trò chơi **Bullet Barrage** được tổ chức như sau:
 
 ## Cách tải game
 
-- Link download thư viện SDL2.0: https://github.com/libsdl-org/SDL/releases/tag/release-2.30.6
-- Download code và file.exe ở giao diện Code ở dưới
+Bước 1: Clone repo này về .
+Hoặc Chọn Code -> Download Zip
 
 ![CODE](https://github.com/user-attachments/assets/9e90c092-1dca-42ec-a80c-22f39a8d8677)
 
-- Trong phần local, chọn Github CLI và download zip.
+Yêu cầu có Visual Studio 2022 Community và tải gói C++ cần thiết cùng thiết lập thư viện SDL.
 
-![image](https://github.com/user-attachments/assets/6fd4ba99-13ab-4341-981a-e0d69bd0804f)
+Bước 2: Bấm vào file BulletBarrage.sln dự án sẽ tự động mở trong Visual Studio.
 
-- Sau khi download về, extract (giải nén) toàn bộ folder zip.
- 
-- Folder Debug bao gồm file.exe có thể chơi mà không cần chạy code. Cần có môi trường MinGW để có thể chạy được. Link download: https://sourceforge.net/projects/mingw/
-
-- Các Folder còn lại bao gồm code, âm thanh, font và hình ảnh. Muốn chỉnh sửa hoặc thay đổi code hãy thay đổi đường dẫn file âm thanh, font và hình ảnh phù hợp với máy của bạn.
+Bước 3: Bấm vào Local Windows Debugger để khởi động game
 
 ## Kết luận
 
