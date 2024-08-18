@@ -103,8 +103,65 @@ Cấu trúc của trò chơi **Bullet Barrage** được tổ chức như sau:
 - **`ScoreScreen.cpp & ScoreScreen.h`**: Hiển thị bảng điểm cao và xử lý các sự kiện liên quan đến màn hình điểm số. Cho phép người chơi quay lại menu chính từ màn hình này.
 
 
+## Kỹ thuật, công nghệ sử dụng
+•	Sử dụng các hàm trong thư viện SDL bao gồm: xử lý đồ họa, font chữ, âm thanh, thao tác chuột, bàn phím, …
+
+•	Sử dụng class để có thể đóng gói các đối tượng, phương thức giúp đọc hiểu và tái sử dụng code dễ dàng hơn.
+
+•	Kết hợp thư viện SDL với làm việc với file để load và xử lý ảnh, font chữ và âm thanh.
+
+•	Sử dụng Vector để lưu trữ viên đạn và các thuật toán sắp xếp cùng kiểm tra va chạm và xử lý bắt sự kiện.
+
+
+## Nguồn tham khảo
+•	Tham khảo ý tưởng của minigame cùng trên trong trò chơi Pummel Party.
+
+•	Tham khảo code trên lazy.foo về kĩ thuật load và render texture, load âm thanh.
+
+•	Mua assets ảnh và âm thanh, font chữ trên itch.io.
+
+•	Tham khảo nguồn youtube và trên mạng xã hội về Spiral Pattern Bullet trong game : https://www.youtube.com/watch?v=5dlEl_G713A
+
+•	Có sự hỗ trợ từ ChatGpt để tối ưu và cải thiện hiệu năng cùng code cho game.
+
 ## Cách tải game
 
 1. **Download**: Tải tệp trò chơi về máy tính của bạn.
 2. **Extract**: Giải nén nội dung của tệp.
 3. **Run**: Tìm tệp `BulletBarrage.exe`, mở nó và thưởng thức trò chơi.
+
+## Kết luận
+
+### Ưu điểm
+•	Tách và phát triển riêng trò chơi Bullet Barrage ra khỏi Pummel Party.
+
+•	Thêm những loại đạn khác so với trò chơi gốc.
+
+•	Cách tính điểm riêng và cách để chiến thắng khác so với bản gốc.
+
+•	Có khả năng chuyển đổi nhạc nền linh hoạt.
+
+•	Mã nguồn được tổ chức tốt và có tính module hóa cao.
+
+•	Các chức năng được tách biệt rõ ràng giữa các tệp tin khác nhau, giúp dễ dàng quản lý và phát triển thêm. 
+
+### Hạn chế
+•	Quản lý tài nguyên (như texture, âm thanh) và xử lý va chạm có thể được cải thiện tốt hơn.
+
+•	Game có thể gặp vấn đề về hiệu suất nếu số lượng đạn trên màn hình tăng cao do việc xử lý logic của mỗi viên đạn riêng lẻ (tuy nhiên những viên đạn ra khỏi màn hình đã được xoá và số lượng viên đạn xuất hiện trên màn hình cùng 1 lúc đã được kiểm soát.
+
+### Bài học kinh nghiệm
+•	Tầm quan trọng của việc lập kế hoạch và thiết kế
+
+•	Quản lý tài nguyên và hiệu suất
+
+•	Xử lý sự kiện và cập nhật trạng thái
+
+•	Tính năng mở rộng và bảo trì mã nguồn
+
+•	Kiểm thử và sửa lỗi
+
+•	Trải nghiệm người dùng và giao diện
+
+### Nguyện vọng về điểm
+Mức điểm mong muốn 9+/10.
