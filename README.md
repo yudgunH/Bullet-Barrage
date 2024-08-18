@@ -1,5 +1,8 @@
 # Bullet Barrage (Minigame)
 
+- **Giới thiệu game:** https://youtu.be/-rurGAphFeQ?si=AvBmSESGc3_YIoqR
+- **Trải nghiệm game:** https://youtu.be/-xDHRhAl69U?si=EBzf9lO-LOrxxUrS
+
 ## Thông tin
 
 - **Full Name:** Nguyễn Duy Hưng
@@ -44,9 +47,10 @@
 
 ### 1. Bắt đầu chơi
 Trò chơi bắt đầu khi các viên đạn được bắn ra từ các cạnh của đấu trường. Người chơi sử dụng các phím điều khiển để di chuyển nhân vật và né tránh đạn.
+Lưu ý : Tốc độ của các viên đạn tăng dần theo thời gian trôi qua.
 
 ### 2. Điều khiển nhân vật
-Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải.
+Sử dụng các phím mũi tên để di chuyển nhân vật lên, trái hoặc phải. Đặc biệt nhân vật có khả năng double jump khi nhảy lần 2 ở trên không trung.
 
 ### 3. Kết thúc trò chơi
 Trò chơi kết thúc khi người chơi hết 3 máu.
