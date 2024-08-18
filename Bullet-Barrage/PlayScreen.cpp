@@ -500,8 +500,6 @@ void PlayScreen::render(SDL_Renderer* renderer) {
         bullet->render(renderer);
     }
 
-    boom->render(renderer);
-
     int currentHealth = player->getHealth();
     for (int i = 0; i < 3; ++i) {
         if (i < currentHealth) {
